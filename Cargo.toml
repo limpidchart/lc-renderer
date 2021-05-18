@@ -1,0 +1,15 @@
+[package]
+name = "lc-renderer"
+version = "0.0.1"
+edition = "2018"
+authors = ["Andrei Ozerov <andrei.ozerov92@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Server to render chart images."
+readme = "README.md"
+documentation = "https://docs.rs/lc-renderer"
+homepage = "https://github.com/limpidchart/lc-renderer"
+repository = "https://github.com/limpidchart/lc-renderer.git"
+categories = ["graphics"]
+keywords = ["graphics"]
+
+[dependencies]
