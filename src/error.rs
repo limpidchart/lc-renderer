@@ -3,6 +3,9 @@
 pub enum RendererError {
     /// RenderError contains chart rendering error from rendering lib.
     RenderError(lc_render::Error),
+
+    /// Expected view colors but they are not specified.
+    ViewColorsAreNotSpecified,
 }
 
 impl std::fmt::Display for RendererError {
@@ -10,6 +13,9 @@ impl std::fmt::Display for RendererError {
         match &*self {
             RendererError::RenderError(e) => {
                 format!("unable to render chart: {}", e.to_string()).fmt(f)
+            }
+            RendererError::ViewColorsAreNotSpecified => {
+                "chart view colors should be specified".to_string().fmt(f)
             }
         }
     }
