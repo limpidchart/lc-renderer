@@ -13,9 +13,10 @@ categories = ["graphics"]
 keywords = ["graphics"]
 
 [dependencies]
-tonic = "0.4"
+lc-render = "0.2.0"
 prost = "0.7"
 prost-types = "0.7"
+tonic = "0.4"
 
 [build-dependencies]
 tonic-build = "0.4"
