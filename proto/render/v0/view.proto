@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+import "color.proto";
+import "scale.proto";
+import "view_values.proto";
+
+// ChartView represents options to configure chart view.
+message ChartView {
+  // ChartViewKind contains available view kinds.
+  enum ChartViewKind {
+    UNSPECIFIED_KIND = 0;
+    AREA = 1;
+    HORIZONTAL_BAR = 2;
+    LINE = 3;
+    SCATTER = 4;
+    VERTICAL_BAR = 5;
+  }
+
+  // ChartViewBarLabelPosition contains available view label positions.
+  enum ChartViewBarLabelPosition {
+    UNSPECIFIED_BAR_LABEL_POSITION = 0;
+    START_OUTSIDE = 1;
+    START_INSIDE = 2;
+    CENTER = 3;
+    END_INSIDE = 4;
+    END_OUTSIDE = 5;
+  }
+
+  // ChartViewPointType contains available view point types.
+  enum ChartViewPointType {
+    UNSPECIFIED_POINT_TYPE = 0;
+    CIRCLE = 1;
+    SQUARE = 2;
+    X = 3;
+  }
+
+  // ChartViewPointLabelPosition contains available view point label positions.
+  enum ChartViewPointLabelPosition {
+    UNSPECIFIED_POINT_LABEL_POSITION = 0;
+    TOP = 1;
+    TOP_RIGHT = 2;
+    TOP_LEFT = 3;
+    LEFT = 4;
+    RIGHT = 5;
+    BOTTOM = 6;
+    BOTTOM_LEFT = 7;
+    BOTTOM_RIGHT = 8;
+  }
+
+  // One of the available view kinds.
+  ChartViewKind kind = 1;
+
+  // Configured scale for horizontal axis.
+  ChartScale x_scale = 2;
+
+  // Configured scale for vertical axis.
+  ChartScale y_scale = 3;
+
+  // View values with one of available kind of values.
+  oneof values {
+    ChartViewScalarValues scalar_values = 4;
+    ChartViewPointsValues points_values = 5;
+    ChartViewBarsValues bars_values = 6;
+  }
+
+  // Configured colors for view.
+  ChartViewColors colors = 7;
+
+  // Set bar visibility for bar view.
+  bool bar_label_visible = 8;
+
+  // One of the available bar label positions for bar view.
+  ChartViewBarLabelPosition bar_label_position = 9;
+
+  // Set bar visibility for view with points.
+  bool point_visible = 10;
+
+  // One of the available point types for view with points.
+  ChartViewPointType point_type = 11;
+
+  // Set point visibility for view with points.
+  bool point_label_visible = 12;
+
+  // One of the available point label positions for view with points.
+  ChartViewPointLabelPosition point_label_position = 13;
+}
+
+// ChartViewColors represents options to configure view colors.
+message ChartViewColors {
+  // View fill color.
+  ChartElementColor fill_color = 1;
+
+  // View stroke color.
+  ChartElementColor stroke_color = 2;
+
+  // View point fill color.
+  ChartElementColor point_fill_color = 3;
+
+  // View point stroke color.
+  ChartElementColor point_stroke_color = 4;
+}

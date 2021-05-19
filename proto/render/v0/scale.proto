@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+// ChartScale represents options to configure chart scale.
+message ChartScale {
+  // ChartScaleKind contains available scale kinds.
+  enum ChartScaleKind {
+    UNSPECIFIED_SCALE = 0;
+    LINEAR = 1;
+    BAND = 2;
+  }
+
+  // One of the available scale kinds.
+  ChartScaleKind kind = 1;
+
+  // Start of the scale range.
+  int32 range_start = 2;
+
+  // End of the scale range.
+  int32 range_end = 3;
+
+  // Start of the numeric scale domain.
+  float domain_num_start = 4;
+
+  // End of the numeric scale domain.
+  float domain_num_end = 5;
+
+  // Scale string categories.
+  repeated string domain_categories = 6;
+
+  // Does this scale needs an offset from the start and end of an axis.
+  // This is usually need for an area or line views.
+  bool no_boundaries_offset = 7;
+
+  // Inner padding for categories.
+  float inner_padding = 8;
+
+  // Outer padding for categories.
+  float outer_padding = 9;
+}

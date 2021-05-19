@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+import "color.proto";
+
+// ChartViewBarsValues represents options for bar values.
+message ChartViewBarsValues {
+  // BarsValues represents bars values parameters.
+  message BarsValues {
+    repeated float values = 1;
+    ChartElementColor fill_color = 2;
+    ChartElementColor stroke_color = 3;
+  }
+
+  // Array of configured bars values.
+  repeated BarsValues bars_values = 1;
+}
+
+// ChartViewPointsValues represents options for point values.
+message ChartViewPointsValues {
+  // PointValues represents point values parameters.
+  message PointValues {
+    float x = 1;
+    float y = 2;
+  }
+
+  // Array of configured point values.
+  repeated PointValues values = 1;
+}
+
+// ChartViewScalarValues represents options for scalar values.
+message ChartViewScalarValues {
+  // Array of scalar values.
+  repeated float values = 1;
+}
