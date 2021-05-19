@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+// ChartElementColor represents options to configure color for chart elements.
+message ChartElementColor {
+  // RGB contains values for RGB color.
+  message RGB {
+    uint32 r = 1;
+    uint32 g = 2;
+    uint32 b = 3;
+  }
+
+  // Value of color.
+  // Can contain HEX or RGB value.
+  oneof color_value {
+    string color_hex = 1;
+    RGB color_rgb = 2;
+  }
+}

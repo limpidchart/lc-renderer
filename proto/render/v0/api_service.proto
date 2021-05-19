@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+import "google/protobuf/timestamp.proto";
+import "chart.proto";
+import "view.proto";
+
+// ChartStatus contains available chart statuses.
+enum ChartStatus {
+  UNSPECIFIED_STATUS = 0;
+  CREATED = 1;
+  ERROR = 2;
+}
+
+// CreateChartRequest represents chart creation request.
+message CreateChartRequest {
+  // Chart title.
+  string title = 1;
+
+  // Configured chart sizes.
+  ChartSizes sizes = 2;
+
+  // Configured chart margins.
+  ChartMargins margins = 3;
+
+  // Configured chart axes.
+  ChartAxes axes = 4;
+
+  // Configured chart views.
+  repeated ChartView views = 5;
+}
+
+// GetChartRequest represents chart get request.
+message GetChartRequest {
+  // ID of the chart.
+  string chart_id = 1;
+}
+
+// ChartReply represents chart reply from create or get requests.
+message ChartReply {
+  // ID of the request.
+  string request_id = 1;
+
+  // ID of the chart.
+  string chart_id = 2;
+
+  // One of the available chart statuses.
+  ChartStatus chart_status = 3;
+
+  // Chart creation timestamp.
+  google.protobuf.Timestamp created_at = 4;
+
+  // When the chart will become unavailable.
+  // It depends of `ttl` value that was provided in chart create request.
+  // It equals to `created_at` value if `ttl` was set zero.
+  google.protobuf.Timestamp deleted_at = 5;
+
+  // Chart raw bytes representation.
+  bytes chart_data = 6;
+}
+
+// ChartAPI represents a service that provides public API for Limpidchart.
+service ChartAPI {
+  // Create chart and return its raw bytes representation with additional metadata.
+  rpc CreateChart(CreateChartRequest) returns (ChartReply) {}
+
+  // Get a created chart raw bytes representation with additional metadata.
+  rpc GetChart(GetChartRequest) returns (ChartReply) {}
+}
