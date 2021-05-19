@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+import "scale.proto";
+import "view.proto";
+
+// ChartSizes represents options to configure chart sizes.
+message ChartSizes {
+  // Chart width.
+  int32 width = 1;
+
+  // Chart height.
+  int32 height = 2;
+}
+
+// ChartMargins represents options to configure chart margins.
+message ChartMargins {
+  // Top margin.
+  int32 margin_top = 1;
+
+  // Bottom margin.
+  int32 margin_bottom = 2;
+
+  // Left margin.
+  int32 margin_left = 3;
+
+  // Right margin.
+  int32 margin_right = 4;
+}
+
+// ChartAxes represents options to configure chart axes.
+message ChartAxes {
+  // Configured scale for top axis.
+  ChartScale axis_top = 1;
+
+  // Label for top axis.
+  string axis_top_label = 2;
+
+  // Configured scale for bottom axis.
+  ChartScale axis_bottom = 3;
+
+  // Label for bottom axis.
+  string axis_bottom_label = 4;
+
+  // Configured scale for left axis.
+  ChartScale axis_left = 5;
+
+  // Label for left axis.
+  string axis_left_label = 6;
+
+  // Configured scale for right axis.
+  ChartScale axis_right = 7;
+
+  // Label for right axis.
+  string axis_right_label = 8;
+}

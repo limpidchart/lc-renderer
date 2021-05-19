@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package render;
+
+option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
+
+import "google/protobuf/timestamp.proto";
+import "chart.proto";
+import "view.proto";
+
+// RenderChartRequest represents chart rendering request.
+message RenderChartRequest {
+  // ID of the request.
+  string request_id = 1;
+
+  // Chart title.
+  string title = 2;
+
+  // Configured chart sizes.
+  ChartSizes sizes = 3;
+
+  // Configured chart margins.
+  ChartMargins margins = 4;
+
+  // Configured chart axes.
+  ChartAxes axes = 5;
+
+  // Configured chart views.
+  repeated ChartView views = 6;
+}
+
+// RenderChartReply represents chart rendering reply.
+message RenderChartReply {
+  // ID of the request.
+  string request_id = 1;
+
+  // Chart raw bytes representation.
+  bytes chart_data = 2;
+}
+
+// ChartRenderer represents a service that uses lc-render library to create charts.
+service ChartRenderer {
+  // Render chart and return its raw bytes representation.
+  rpc RenderChart(RenderChartRequest) returns (RenderChartReply) {}
+}
