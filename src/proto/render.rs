@@ -74,15 +74,15 @@ pub mod chart_element_color {
 /// ChartViewBarsValues represents options for bar values.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChartViewBarsValues {
-    /// Array of configured bars values.
+    /// Array of configured bars datasets.
     #[prost(message, repeated, tag = "1")]
-    pub bars_values: ::prost::alloc::vec::Vec<chart_view_bars_values::BarsValues>,
+    pub bars_datasets: ::prost::alloc::vec::Vec<chart_view_bars_values::BarsDataset>,
 }
 /// Nested message and enum types in `ChartViewBarsValues`.
 pub mod chart_view_bars_values {
-    /// BarsValues represents bars values parameters.
+    /// BarsDataset represents a single dataset with several bars.
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct BarsValues {
+    pub struct BarsDataset {
         #[prost(float, repeated, tag = "1")]
         pub values: ::prost::alloc::vec::Vec<f32>,
         #[prost(message, optional, tag = "2")]
@@ -94,15 +94,15 @@ pub mod chart_view_bars_values {
 /// ChartViewPointsValues represents options for point values.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChartViewPointsValues {
-    /// Array of configured point values.
+    /// Array of configured points.
     #[prost(message, repeated, tag = "1")]
-    pub values: ::prost::alloc::vec::Vec<chart_view_points_values::PointValues>,
+    pub points: ::prost::alloc::vec::Vec<chart_view_points_values::Point>,
 }
 /// Nested message and enum types in `ChartViewPointsValues`.
 pub mod chart_view_points_values {
-    /// PointValues represents point values parameters.
+    /// Point represents parameters for a single point.
     #[derive(Clone, PartialEq, ::prost::Message)]
-    pub struct PointValues {
+    pub struct Point {
         #[prost(float, tag = "1")]
         pub x: f32,
         #[prost(float, tag = "2")]

@@ -8,27 +8,27 @@ import "color.proto";
 
 // ChartViewBarsValues represents options for bar values.
 message ChartViewBarsValues {
-  // BarsValues represents bars values parameters.
-  message BarsValues {
+  // BarsDataset represents a single dataset with several bars.
+  message BarsDataset {
     repeated float values = 1;
     ChartElementColor fill_color = 2;
     ChartElementColor stroke_color = 3;
   }
 
-  // Array of configured bars values.
-  repeated BarsValues bars_values = 1;
+  // Array of configured bars datasets.
+  repeated BarsDataset bars_datasets = 1;
 }
 
 // ChartViewPointsValues represents options for point values.
 message ChartViewPointsValues {
-  // PointValues represents point values parameters.
-  message PointValues {
+  // Point represents parameters for a single point.
+  message Point {
     float x = 1;
     float y = 2;
   }
 
-  // Array of configured point values.
-  repeated PointValues values = 1;
+  // Array of configured points.
+  repeated Point points = 1;
 }
 
 // ChartViewScalarValues represents options for scalar values.
