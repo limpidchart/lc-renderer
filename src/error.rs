@@ -4,8 +4,26 @@ pub enum RendererError {
     /// RenderError contains chart rendering error from rendering lib.
     RenderError(lc_render::Error),
 
-    /// Expected view colors but they are not specified.
+    /// View colors are not specified.
     ViewColorsAreNotSpecified,
+
+    /// View values are not specified.
+    ViewValuesAreNotSpecified,
+
+    /// Expected scalar values but got other kind.
+    ExpectedScalarValues,
+
+    /// Expected bars values but got other kind.
+    ExpectedBarsValues,
+
+    /// Expected points values but got other kind.
+    ExpectedPointsValues,
+
+    /// Bars values fill color is not provided.
+    ExpectedFillColorForBarsValues,
+
+    /// Bars values stroke color is not provided.
+    ExpectedStrokeColorForBarsValues,
 }
 
 impl std::fmt::Display for RendererError {
@@ -15,7 +33,23 @@ impl std::fmt::Display for RendererError {
                 format!("unable to render chart: {}", e.to_string()).fmt(f)
             }
             RendererError::ViewColorsAreNotSpecified => {
-                "chart view colors should be specified".to_string().fmt(f)
+                "view colors should be specified".to_string().fmt(f)
+            }
+            RendererError::ViewValuesAreNotSpecified => {
+                "view values should be specified".to_string().fmt(f)
+            }
+            RendererError::ExpectedScalarValues => {
+                "expected scalar values for view".to_string().fmt(f)
+            }
+            RendererError::ExpectedBarsValues => "expected bars values for view".to_string().fmt(f),
+            RendererError::ExpectedPointsValues => {
+                "expected points values for view".to_string().fmt(f)
+            }
+            RendererError::ExpectedFillColorForBarsValues => {
+                "expected fill color for bars values".to_string().fmt(f)
+            }
+            RendererError::ExpectedStrokeColorForBarsValues => {
+                "expected stroke color for bars values".to_string().fmt(f)
             }
         }
     }
