@@ -24,6 +24,9 @@ pub enum RendererError {
 
     /// Bars values stroke color is not provided.
     ExpectedStrokeColorForBarsValues,
+
+    // Got unknown bar label position.
+    BarLabelPositionIsUnknown,
 }
 
 impl std::fmt::Display for RendererError {
@@ -50,6 +53,9 @@ impl std::fmt::Display for RendererError {
             }
             RendererError::ExpectedStrokeColorForBarsValues => {
                 "expected stroke color for bars values".to_string().fmt(f)
+            }
+            RendererError::BarLabelPositionIsUnknown => {
+                "view bar label position is unknown".to_string().fmt(f)
             }
         }
     }

@@ -1,3 +1,4 @@
+mod bar;
 mod color;
 mod error;
 mod proto;
