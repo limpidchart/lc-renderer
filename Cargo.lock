@@ -271,9 +271,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "lc-render"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e17aecd3ec7ca6df3f72a42ccd6e35bd1554727c661c9763a6bcb7a96873cac"
+checksum = "bf3cee7b1d3376571b028c5907b4c7cf2a18844152edde65ba663e068c21ff6a"
 dependencies = [
  "itertools 0.10.0",
  "svg",
