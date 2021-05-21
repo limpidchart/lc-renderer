@@ -27,6 +27,12 @@ pub enum RendererError {
 
     // Got unknown bar label position.
     BarLabelPositionIsUnknown,
+
+    // Got unknown point label position.
+    PointLabelPositionIsUnknown,
+
+    // Got unknown point type.
+    PointTypeIsUnknown,
 }
 
 impl std::fmt::Display for RendererError {
@@ -57,6 +63,10 @@ impl std::fmt::Display for RendererError {
             RendererError::BarLabelPositionIsUnknown => {
                 "view bar label position is unknown".to_string().fmt(f)
             }
+            RendererError::PointLabelPositionIsUnknown => {
+                "view point label position is unknown".to_string().fmt(f)
+            }
+            RendererError::PointTypeIsUnknown => "view point type is unknown".to_string().fmt(f),
         }
     }
 }
