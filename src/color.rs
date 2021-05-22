@@ -100,8 +100,7 @@ mod tests {
             point_stroke_color: color_rgb(),
         };
 
-        let view_colors =
-            get_view_colors(Some(chart_view_colors)).expect("unable to get view colors");
+        let view_colors = get_view_colors(Some(chart_view_colors)).unwrap();
 
         assert_eq!(
             "#0E0C50".to_string(),
