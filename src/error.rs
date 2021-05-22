@@ -25,14 +25,20 @@ pub enum RendererError {
     /// Bars values stroke color is not provided.
     ExpectedStrokeColorForBarsValues,
 
-    // Got unknown bar label position.
+    /// Got unknown bar label position.
     BarLabelPositionIsUnknown,
 
-    // Got unknown point label position.
+    /// Got unknown point label position.
     PointLabelPositionIsUnknown,
 
-    // Got unknown point type.
+    /// Got unknown point type.
     PointTypeIsUnknown,
+
+    /// Top or bottom axis should be specified.
+    TopOrBottomAxisShouldBeSpecified,
+
+    /// Left or right axis should be specified.
+    LeftOrRightAxisShouldBeSpecified,
 }
 
 impl std::fmt::Display for RendererError {
@@ -67,6 +73,12 @@ impl std::fmt::Display for RendererError {
                 "view point label position is unknown".to_string().fmt(f)
             }
             RendererError::PointTypeIsUnknown => "view point type is unknown".to_string().fmt(f),
+            RendererError::TopOrBottomAxisShouldBeSpecified => {
+                "top or bottom axis should be specified".to_string().fmt(f)
+            }
+            RendererError::LeftOrRightAxisShouldBeSpecified => {
+                "left or right axis should be specified".to_string().fmt(f)
+            }
         }
     }
 }
