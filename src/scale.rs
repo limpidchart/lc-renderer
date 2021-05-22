@@ -1,7 +1,26 @@
-use crate::proto::render::{ChartMargins, ChartScale, ChartSizes};
+use crate::error::RendererError;
+use crate::proto::render::{ChartAxes, ChartMargins, ChartScale, ChartSizes};
 use lc_render::{BandScale, LinearScale};
 
-// Get linear horizontal scale from chart parameters.
+// Get horizontal scale from protobuf.
+pub(crate) fn get_h_scale(axes: &ChartAxes) -> Result<ChartScale, RendererError> {
+    match (axes.axis_top.clone(), axes.axis_bottom.clone()) {
+        (Some(axis_top), _) => Ok(axis_top),
+        (_, Some(axis_bottom)) => Ok(axis_bottom),
+        _ => Err(RendererError::TopOrBottomAxisShouldBeSpecified),
+    }
+}
+
+// Get vertical scale from protobuf.
+pub(crate) fn get_v_scale(axes: &ChartAxes) -> Result<ChartScale, RendererError> {
+    match (axes.axis_left.clone(), axes.axis_right.clone()) {
+        (Some(axis_left), _) => Ok(axis_left),
+        (_, Some(axis_right)) => Ok(axis_right),
+        _ => Err(RendererError::LeftOrRightAxisShouldBeSpecified),
+    }
+}
+
+// Get linear horizontal scale from protobuf.
 pub(crate) fn get_linear_h_scale(
     h_scale: &ChartScale,
     sizes: &ChartSizes,
@@ -15,7 +34,7 @@ pub(crate) fn get_linear_h_scale(
     )
 }
 
-// Get linear vertical scale from chart parameters.
+// Get linear vertical scale from protobuf.
 pub(crate) fn get_linear_v_scale(
     v_scale: &ChartScale,
     sizes: &ChartSizes,
@@ -29,7 +48,7 @@ pub(crate) fn get_linear_v_scale(
     )
 }
 
-// Get band horizontal scale from chart parameters.
+// Get band horizontal scale from protobuf.
 pub(crate) fn get_band_h_scale(
     h_scale: &ChartScale,
     sizes: &ChartSizes,
@@ -45,7 +64,7 @@ pub(crate) fn get_band_h_scale(
     .set_no_boundaries_offset(h_scale.no_boundaries_offset)
 }
 
-// Get band vertical scale from chart parameters.
+// Get band vertical scale from protobuf.
 pub(crate) fn get_band_v_scale(
     v_scale: &ChartScale,
     sizes: &ChartSizes,
@@ -109,6 +128,75 @@ mod tests {
             margin_left: 200,
             margin_right: 20,
         }
+    }
+
+    fn chart_axes_empty() -> ChartAxes {
+        ChartAxes {
+            axis_top: None,
+            axis_top_label: String::new(),
+            axis_bottom: None,
+            axis_bottom_label: String::new(),
+            axis_left: None,
+            axis_left_label: String::new(),
+            axis_right: None,
+            axis_right_label: String::new(),
+        }
+    }
+
+    #[test]
+    fn get_h_scale_top() {
+        let mut axes = chart_axes_empty();
+        axes.axis_top = Some(chart_scale_band());
+
+        let h_scale = get_h_scale(&axes).unwrap();
+
+        assert_eq!(ChartScaleKind::Band, h_scale.kind());
+    }
+
+    #[test]
+    fn get_h_scale_bottom() {
+        let mut axes = chart_axes_empty();
+        axes.axis_bottom = Some(chart_scale_band());
+
+        let h_scale = get_h_scale(&axes).unwrap();
+
+        assert_eq!(ChartScaleKind::Band, h_scale.kind());
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_h_scale_err() {
+        let axes = chart_axes_empty();
+
+        get_h_scale(&axes).unwrap();
+    }
+
+    #[test]
+    fn get_v_scale_left() {
+        let mut axes = chart_axes_empty();
+        axes.axis_left = Some(chart_scale_linear());
+
+        let v_scale = get_v_scale(&axes).unwrap();
+
+        assert_eq!(ChartScaleKind::Linear, v_scale.kind());
+    }
+
+    #[test]
+    fn get_v_scale_right() {
+        let mut axes = chart_axes_empty();
+        axes.axis_right = Some(chart_scale_linear());
+
+        let v_scale = get_v_scale(&axes).unwrap();
+
+        assert_eq!(ChartScaleKind::Linear, v_scale.kind());
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_v_scale_err() {
+        let axes = chart_axes_empty();
+
+        get_v_scale(&axes).unwrap();
     }
 
     #[test]
