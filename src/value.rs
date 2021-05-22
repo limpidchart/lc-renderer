@@ -88,9 +88,8 @@ mod tests {
     use crate::proto::render::ChartElementColor;
     use lc_render::Color;
 
-    #[test]
-    fn get_scalar_values_basic() {
-        let chart_view = ChartView {
+    fn chart_view_empty() -> ChartView {
+        ChartView {
             kind: 0,
             x_scale: None,
             y_scale: None,
@@ -101,12 +100,18 @@ mod tests {
             point_type: 0,
             point_label_visible: false,
             point_label_position: 0,
-            values: Some(Values::ScalarValues(ChartViewScalarValues {
-                values: vec![1_f32, 2_f32],
-            })),
-        };
+            values: None,
+        }
+    }
 
-        let scalar_values = get_scalar_values(&chart_view).expect("unable to get scalar values");
+    #[test]
+    fn get_scalar_values_basic() {
+        let mut view = chart_view_empty();
+        view.values = Some(Values::ScalarValues(ChartViewScalarValues {
+            values: vec![1_f32, 2_f32],
+        }));
+
+        let scalar_values = get_scalar_values(&view).unwrap();
 
         assert_eq!(vec![1_f32, 2_f32], scalar_values);
     }
@@ -122,42 +127,31 @@ mod tests {
                 .set_stroke_color(Color::new_from_hex("#004F84")),
         ];
 
-        let chart_view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: 0,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: Some(Values::BarsValues(ChartViewBarsValues {
-                bars_datasets: vec![
-                    BarsDataset {
-                        values: vec![1_f32, 2_f32],
-                        fill_color: Some(ChartElementColor {
-                            color_value: Some(ColorValue::ColorHex("#FA4988".to_string())),
-                        }),
-                        stroke_color: Some(ChartElementColor {
-                            color_value: Some(ColorValue::ColorHex("#9C0412".to_string())),
-                        }),
-                    },
-                    BarsDataset {
-                        values: vec![3_f32, 4_f32],
-                        fill_color: Some(ChartElementColor {
-                            color_value: Some(ColorValue::ColorHex("#A9DEF2".to_string())),
-                        }),
-                        stroke_color: Some(ChartElementColor {
-                            color_value: Some(ColorValue::ColorHex("#004F84".to_string())),
-                        }),
-                    },
-                ],
-            })),
-        };
+        let mut view = chart_view_empty();
+        view.values = Some(Values::BarsValues(ChartViewBarsValues {
+            bars_datasets: vec![
+                BarsDataset {
+                    values: vec![1_f32, 2_f32],
+                    fill_color: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#FA4988".to_string())),
+                    }),
+                    stroke_color: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#9C0412".to_string())),
+                    }),
+                },
+                BarsDataset {
+                    values: vec![3_f32, 4_f32],
+                    fill_color: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#A9DEF2".to_string())),
+                    }),
+                    stroke_color: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#004F84".to_string())),
+                    }),
+                },
+            ],
+        }));
 
-        let bars_values = get_bars_values(&chart_view).expect("unable to get bars values");
+        let bars_values = get_bars_values(&view).unwrap();
 
         for (i, bars_value) in bars_values.iter().enumerate() {
             assert_eq!(expected_bars_values[i].values(), bars_value.values());
@@ -174,24 +168,37 @@ mod tests {
 
     #[test]
     fn get_points_values_basic() {
-        let chart_view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: 0,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: Some(Values::PointsValues(ChartViewPointsValues {
-                points: vec![Point { x: 1_f32, y: 2_f32 }, Point { x: 3_f32, y: 4_f32 }],
-            })),
-        };
+        let mut view = chart_view_empty();
+        view.values = Some(Values::PointsValues(ChartViewPointsValues {
+            points: vec![Point { x: 1_f32, y: 2_f32 }, Point { x: 3_f32, y: 4_f32 }],
+        }));
 
-        let points_values = get_points_values(&chart_view).expect("unable to get points values");
+        let points_values = get_points_values(&view).unwrap();
 
         assert_eq!(vec![(1_f32, 2_f32), (3_f32, 4_f32)], points_values);
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_scalar_values_err() {
+        let view = chart_view_empty();
+
+        get_scalar_values(&view).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_bars_values_err() {
+        let view = chart_view_empty();
+
+        get_bars_values(&view).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_points_values_err() {
+        let view = chart_view_empty();
+
+        get_points_values(&view).unwrap();
     }
 }

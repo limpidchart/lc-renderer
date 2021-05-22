@@ -19,120 +19,8 @@ fn get_bar_label_position(view: &ChartView) -> Result<BarLabelPosition, Renderer
 mod tests {
     use super::*;
 
-    #[test]
-    fn get_bar_label_position_center() {
-        let view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: ChartViewBarLabelPosition::Center as i32,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: None,
-        };
-
-        assert_eq!(
-            BarLabelPosition::Center,
-            get_bar_label_position(&view).unwrap()
-        );
-    }
-
-    #[test]
-    fn get_bar_label_position_end_inside() {
-        let view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: ChartViewBarLabelPosition::EndInside as i32,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: None,
-        };
-
-        assert_eq!(
-            BarLabelPosition::EndInside,
-            get_bar_label_position(&view).unwrap()
-        );
-    }
-
-    #[test]
-    fn get_bar_label_position_end_outside() {
-        let view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: ChartViewBarLabelPosition::EndOutside as i32,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: None,
-        };
-
-        assert_eq!(
-            BarLabelPosition::EndOutside,
-            get_bar_label_position(&view).unwrap()
-        );
-    }
-
-    #[test]
-    fn get_bar_label_position_start_inside() {
-        let view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: ChartViewBarLabelPosition::StartInside as i32,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: None,
-        };
-
-        assert_eq!(
-            BarLabelPosition::StartInside,
-            get_bar_label_position(&view).unwrap()
-        );
-    }
-
-    #[test]
-    fn get_bar_label_position_start_outside() {
-        let view = ChartView {
-            kind: 0,
-            x_scale: None,
-            y_scale: None,
-            colors: None,
-            bar_label_visible: false,
-            bar_label_position: ChartViewBarLabelPosition::StartOutside as i32,
-            point_visible: false,
-            point_type: 0,
-            point_label_visible: false,
-            point_label_position: 0,
-            values: None,
-        };
-
-        assert_eq!(
-            BarLabelPosition::StartOutside,
-            get_bar_label_position(&view).unwrap()
-        );
-    }
-
-    #[test]
-    #[should_panic]
-    fn get_bar_label_position_unknown() {
-        let view = ChartView {
+    fn chart_view_empty() -> ChartView {
+        ChartView {
             kind: 0,
             x_scale: None,
             y_scale: None,
@@ -144,7 +32,68 @@ mod tests {
             point_label_visible: false,
             point_label_position: 0,
             values: None,
-        };
+        }
+    }
+
+    #[test]
+    fn get_bar_label_position_center() {
+        let mut view = chart_view_empty();
+        view.bar_label_position = ChartViewBarLabelPosition::Center as i32;
+
+        assert_eq!(
+            BarLabelPosition::Center,
+            get_bar_label_position(&view).unwrap()
+        );
+    }
+
+    #[test]
+    fn get_bar_label_position_end_inside() {
+        let mut view = chart_view_empty();
+        view.bar_label_position = ChartViewBarLabelPosition::EndInside as i32;
+
+        assert_eq!(
+            BarLabelPosition::EndInside,
+            get_bar_label_position(&view).unwrap()
+        );
+    }
+
+    #[test]
+    fn get_bar_label_position_end_outside() {
+        let mut view = chart_view_empty();
+        view.bar_label_position = ChartViewBarLabelPosition::EndOutside as i32;
+
+        assert_eq!(
+            BarLabelPosition::EndOutside,
+            get_bar_label_position(&view).unwrap()
+        );
+    }
+
+    #[test]
+    fn get_bar_label_position_start_inside() {
+        let mut view = chart_view_empty();
+        view.bar_label_position = ChartViewBarLabelPosition::StartInside as i32;
+
+        assert_eq!(
+            BarLabelPosition::StartInside,
+            get_bar_label_position(&view).unwrap()
+        );
+    }
+
+    #[test]
+    fn get_bar_label_position_start_outside() {
+        let mut view = chart_view_empty();
+        view.bar_label_position = ChartViewBarLabelPosition::StartOutside as i32;
+
+        assert_eq!(
+            BarLabelPosition::StartOutside,
+            get_bar_label_position(&view).unwrap()
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_bar_label_position_unknown() {
+        let view = chart_view_empty();
 
         get_bar_label_position(&view).unwrap();
     }
