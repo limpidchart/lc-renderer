@@ -4,7 +4,9 @@ use crate::proto::render::ChartView;
 use lc_render::{PointLabelPosition, PointType};
 
 // Get label position for point from protobuf.
-fn get_point_label_position(view: &ChartView) -> Result<PointLabelPosition, RendererError> {
+pub(crate) fn get_point_label_position(
+    view: &ChartView,
+) -> Result<PointLabelPosition, RendererError> {
     match ChartViewPointLabelPosition::from_i32(view.point_label_position) {
         Some(ChartViewPointLabelPosition::Top) => Ok(PointLabelPosition::Top),
         Some(ChartViewPointLabelPosition::TopLeft) => Ok(PointLabelPosition::TopLeft),
@@ -19,7 +21,7 @@ fn get_point_label_position(view: &ChartView) -> Result<PointLabelPosition, Rend
 }
 
 // Get point type from protobuf.
-fn get_point_type(view: &ChartView) -> Result<PointType, RendererError> {
+pub(crate) fn get_point_type(view: &ChartView) -> Result<PointType, RendererError> {
     match ChartViewPointType::from_i32(view.point_type) {
         Some(ChartViewPointType::Circle) => Ok(PointType::Circle),
         Some(ChartViewPointType::Square) => Ok(PointType::Square),

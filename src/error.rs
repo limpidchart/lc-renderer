@@ -39,6 +39,36 @@ pub enum RendererError {
 
     /// Left or right axis should be specified.
     LeftOrRightAxisShouldBeSpecified,
+
+    /// Expected configured fill color for area view.
+    ExpectedFillColorForAreaView,
+
+    /// Expected configured stroke color for area view.
+    ExpectedStrokeColorForAreaView,
+
+    /// Expected configured point fill color for area view.
+    ExpectedPointFillColorForAreaView,
+
+    /// Expected configured point stroke color for area view.
+    ExpectedPointStrokeColorForAreaView,
+
+    /// Expected configured stroke color for line view.
+    ExpectedStrokeColorForLineView,
+
+    /// Expected configured point fill color for line view.
+    ExpectedPointFillColorForLineView,
+
+    /// Expected configured point stroke color for line view.
+    ExpectedPointStrokeColorForLineView,
+
+    /// Expected configured point fill color for scatter view.
+    ExpectedPointFillColorForScatterView,
+
+    /// Expected configured point stroke color for scatter view.
+    ExpectedPointStrokeColorForScatterView,
+
+    /// View kind is unknown.
+    ViewKindIsUnknown,
 }
 
 impl std::fmt::Display for RendererError {
@@ -79,6 +109,42 @@ impl std::fmt::Display for RendererError {
             RendererError::LeftOrRightAxisShouldBeSpecified => {
                 "left or right axis should be specified".to_string().fmt(f)
             }
+            RendererError::ExpectedFillColorForAreaView => {
+                "expected fill color for area view".to_string().fmt(f)
+            }
+            RendererError::ExpectedStrokeColorForAreaView => {
+                "expected stroke color for area view".to_string().fmt(f)
+            }
+            RendererError::ExpectedPointFillColorForAreaView => {
+                "expected point fill color for area view".to_string().fmt(f)
+            }
+            RendererError::ExpectedPointStrokeColorForAreaView => {
+                "expected point stroke color for area view"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::ExpectedStrokeColorForLineView => {
+                "expected stroke color for line view".to_string().fmt(f)
+            }
+            RendererError::ExpectedPointFillColorForLineView => {
+                "expected point fill color for line view".to_string().fmt(f)
+            }
+            RendererError::ExpectedPointStrokeColorForLineView => {
+                "expected point stroke color for line view"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::ExpectedPointFillColorForScatterView => {
+                "expected point fill color for scatter view"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::ExpectedPointStrokeColorForScatterView => {
+                "expected point stroke color for scatter view"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::ViewKindIsUnknown => "view kind is unknown".to_string().fmt(f),
         }
     }
 }

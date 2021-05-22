@@ -4,7 +4,7 @@ use crate::proto::render::ChartView;
 use lc_render::BarLabelPosition;
 
 // Get bar label position from protobuf.
-fn get_bar_label_position(view: &ChartView) -> Result<BarLabelPosition, RendererError> {
+pub(crate) fn get_bar_label_position(view: &ChartView) -> Result<BarLabelPosition, RendererError> {
     match ChartViewBarLabelPosition::from_i32(view.bar_label_position) {
         Some(ChartViewBarLabelPosition::Center) => Ok(BarLabelPosition::Center),
         Some(ChartViewBarLabelPosition::EndInside) => Ok(BarLabelPosition::EndInside),
