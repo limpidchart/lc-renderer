@@ -18,15 +18,15 @@ pub(crate) fn get_color(chart_element_color: Option<ChartElementColor>) -> Optio
 }
 
 // ViewColors contains all colors retrieved from protobuf.
-struct ViewColors {
-    fill_color: Option<Color>,
-    stroke_color: Option<Color>,
-    point_fill_color: Option<Color>,
-    point_stroke_color: Option<Color>,
+pub(crate) struct ViewColors {
+    pub(crate) fill_color: Option<Color>,
+    pub(crate) stroke_color: Option<Color>,
+    pub(crate) point_fill_color: Option<Color>,
+    pub(crate) point_stroke_color: Option<Color>,
 }
 
 // Get ViewColors from protobuf.
-fn get_view_colors(
+pub(crate) fn get_view_colors(
     chart_view_colors: Option<ChartViewColors>,
 ) -> Result<ViewColors, RendererError> {
     let fill_color: Option<Color>;
