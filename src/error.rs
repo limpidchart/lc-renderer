@@ -69,14 +69,33 @@ pub enum RendererError {
 
     /// View kind is unknown.
     ViewKindIsUnknown,
+
+    /// Chart axes are not specified.
+    ChartAxesAreNotSpecified,
+
+    /// Chart sizes are not specified.
+    ChartSizesAreNotSpecified,
+
+    /// Chart margins are not specified.
+    ChartMarginsAreNotSpecified,
+
+    /// Top axis is set but it's not of band or linear kind
+    TopAxisIsSetButItsNotBandOrLinear,
+
+    /// Bottom axis is set but it's not of band or linear kind
+    BottomAxisIsSetButItsNotBandOrLinear,
+
+    /// Left axis is set but it's not of band or linear kind
+    LeftAxisIsSetButItsNotBandOrLinear,
+
+    /// Right axis is set but it's not of band or linear kind
+    RightAxisIsSetButItsNotBandOrLinear,
 }
 
 impl std::fmt::Display for RendererError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &*self {
-            RendererError::RenderError(e) => {
-                format!("unable to render chart: {}", e.to_string()).fmt(f)
-            }
+            RendererError::RenderError(e) => e.fmt(f),
             RendererError::ViewColorsAreNotSpecified => {
                 "view colors should be specified".to_string().fmt(f)
             }
@@ -145,6 +164,35 @@ impl std::fmt::Display for RendererError {
                     .fmt(f)
             }
             RendererError::ViewKindIsUnknown => "view kind is unknown".to_string().fmt(f),
+            RendererError::ChartAxesAreNotSpecified => {
+                "chart axes should be specified".to_string().fmt(f)
+            }
+            RendererError::ChartSizesAreNotSpecified => {
+                "chart sizes should be specified".to_string().fmt(f)
+            }
+            RendererError::ChartMarginsAreNotSpecified => {
+                "chart mergins should be specified".to_string().fmt(f)
+            }
+            RendererError::TopAxisIsSetButItsNotBandOrLinear => {
+                "top axis is set but it's not of band or linear kind"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::BottomAxisIsSetButItsNotBandOrLinear => {
+                "bottom axis is set but it's not of band or linear kind"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::LeftAxisIsSetButItsNotBandOrLinear => {
+                "left axis is set but it's not of band or linear kind"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::RightAxisIsSetButItsNotBandOrLinear => {
+                "right axis is set but it's not of band or linear kind"
+                    .to_string()
+                    .fmt(f)
+            }
         }
     }
 }
