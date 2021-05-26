@@ -51,10 +51,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .parse()
         .expect(&*format!("unable to use {} as socket address", addr));
 
+    // Prepare health reporter service.
+    let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
+    health_reporter
+        .set_serving::<ChartRendererServer<RendererServer>>()
+        .await;
+
     // Start GRPC server.
     info!(log, "Server is started"; "addr" => addr);
     let renderer_server = RendererServer::new(log);
     Server::builder()
+        .add_service(health_service)
         .add_service(ChartRendererServer::new(renderer_server))
         .serve(socket_addr)
         .await?;
