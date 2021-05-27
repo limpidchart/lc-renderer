@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-publish-release:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{GITHUB_REF##*/}}
     steps:
       - uses: actions/checkout@v2
 
@@ -21,5 +23,5 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/limpidchart/lc-renderer:${GITHUB_REF##*/}
+            ghcr.io/limpidchart/lc-renderer:${{IMAGE_TAG}}
             ghcr.io/limpidchart/lc-renderer:latest
