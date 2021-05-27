@@ -1,4 +1,4 @@
-name: docker-image
+name: docker-image-develop
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-publish:
+  build-and-publish-develop:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
