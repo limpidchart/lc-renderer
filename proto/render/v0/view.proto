@@ -8,6 +8,8 @@ import "color.proto";
 import "scale.proto";
 import "view_values.proto";
 
+import "google/protobuf/wrappers.proto";
+
 // ChartView represents options to configure chart view.
 message ChartView {
   // ChartViewKind contains available view kinds.
@@ -71,19 +73,19 @@ message ChartView {
   ChartViewColors colors = 7;
 
   // Set bar visibility for bar view.
-  bool bar_label_visible = 8;
+  google.protobuf.BoolValue bar_label_visible = 8;
 
   // One of the available bar label positions for bar view.
   ChartViewBarLabelPosition bar_label_position = 9;
 
   // Set bar visibility for view with points.
-  bool point_visible = 10;
+  google.protobuf.BoolValue point_visible = 10;
 
   // One of the available point types for view with points.
   ChartViewPointType point_type = 11;
 
   // Set point visibility for view with points.
-  bool point_label_visible = 12;
+  google.protobuf.BoolValue point_label_visible = 12;
 
   // One of the available point label positions for view with points.
   ChartViewPointLabelPosition point_label_position = 13;

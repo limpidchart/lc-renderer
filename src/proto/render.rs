@@ -5,11 +5,11 @@ pub struct ChartScale {
     #[prost(enumeration = "chart_scale::ChartScaleKind", tag = "1")]
     pub kind: i32,
     /// Start of the scale range.
-    #[prost(int32, tag = "2")]
-    pub range_start: i32,
+    #[prost(message, optional, tag = "2")]
+    pub range_start: ::core::option::Option<i32>,
     /// End of the scale range.
-    #[prost(int32, tag = "3")]
-    pub range_end: i32,
+    #[prost(message, optional, tag = "3")]
+    pub range_end: ::core::option::Option<i32>,
     /// Start of the numeric scale domain.
     #[prost(float, tag = "4")]
     pub domain_num_start: f32,
@@ -24,11 +24,11 @@ pub struct ChartScale {
     #[prost(bool, tag = "7")]
     pub no_boundaries_offset: bool,
     /// Inner padding for categories.
-    #[prost(float, tag = "8")]
-    pub inner_padding: f32,
+    #[prost(message, optional, tag = "8")]
+    pub inner_padding: ::core::option::Option<f32>,
     /// Outer padding for categories.
-    #[prost(float, tag = "9")]
-    pub outer_padding: f32,
+    #[prost(message, optional, tag = "9")]
+    pub outer_padding: ::core::option::Option<f32>,
 }
 /// Nested message and enum types in `ChartScale`.
 pub mod chart_scale {
@@ -40,6 +40,60 @@ pub mod chart_scale {
         Linear = 1,
         Band = 2,
     }
+}
+/// ChartSizes represents options to configure chart sizes.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ChartSizes {
+    /// Chart width.
+    #[prost(message, optional, tag = "1")]
+    pub width: ::core::option::Option<i32>,
+    /// Chart height.
+    #[prost(message, optional, tag = "2")]
+    pub height: ::core::option::Option<i32>,
+}
+/// ChartMargins represents options to configure chart margins.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ChartMargins {
+    /// Top margin.
+    #[prost(message, optional, tag = "1")]
+    pub margin_top: ::core::option::Option<i32>,
+    /// Bottom margin.
+    #[prost(message, optional, tag = "2")]
+    pub margin_bottom: ::core::option::Option<i32>,
+    /// Left margin.
+    #[prost(message, optional, tag = "3")]
+    pub margin_left: ::core::option::Option<i32>,
+    /// Right margin.
+    #[prost(message, optional, tag = "4")]
+    pub margin_right: ::core::option::Option<i32>,
+}
+/// ChartAxes represents options to configure chart axes.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ChartAxes {
+    /// Configured scale for top axis.
+    #[prost(message, optional, tag = "1")]
+    pub axis_top: ::core::option::Option<ChartScale>,
+    /// Label for top axis.
+    #[prost(string, tag = "2")]
+    pub axis_top_label: ::prost::alloc::string::String,
+    /// Configured scale for bottom axis.
+    #[prost(message, optional, tag = "3")]
+    pub axis_bottom: ::core::option::Option<ChartScale>,
+    /// Label for bottom axis.
+    #[prost(string, tag = "4")]
+    pub axis_bottom_label: ::prost::alloc::string::String,
+    /// Configured scale for left axis.
+    #[prost(message, optional, tag = "5")]
+    pub axis_left: ::core::option::Option<ChartScale>,
+    /// Label for left axis.
+    #[prost(string, tag = "6")]
+    pub axis_left_label: ::prost::alloc::string::String,
+    /// Configured scale for right axis.
+    #[prost(message, optional, tag = "7")]
+    pub axis_right: ::core::option::Option<ChartScale>,
+    /// Label for right axis.
+    #[prost(string, tag = "8")]
+    pub axis_right_label: ::prost::alloc::string::String,
 }
 /// ChartElementColor represents options to configure color for chart elements.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -132,20 +186,20 @@ pub struct ChartView {
     #[prost(message, optional, tag = "7")]
     pub colors: ::core::option::Option<ChartViewColors>,
     /// Set bar visibility for bar view.
-    #[prost(bool, tag = "8")]
-    pub bar_label_visible: bool,
+    #[prost(message, optional, tag = "8")]
+    pub bar_label_visible: ::core::option::Option<bool>,
     /// One of the available bar label positions for bar view.
     #[prost(enumeration = "chart_view::ChartViewBarLabelPosition", tag = "9")]
     pub bar_label_position: i32,
     /// Set bar visibility for view with points.
-    #[prost(bool, tag = "10")]
-    pub point_visible: bool,
+    #[prost(message, optional, tag = "10")]
+    pub point_visible: ::core::option::Option<bool>,
     /// One of the available point types for view with points.
     #[prost(enumeration = "chart_view::ChartViewPointType", tag = "11")]
     pub point_type: i32,
     /// Set point visibility for view with points.
-    #[prost(bool, tag = "12")]
-    pub point_label_visible: bool,
+    #[prost(message, optional, tag = "12")]
+    pub point_label_visible: ::core::option::Option<bool>,
     /// One of the available point label positions for view with points.
     #[prost(enumeration = "chart_view::ChartViewPointLabelPosition", tag = "13")]
     pub point_label_position: i32,
@@ -226,60 +280,6 @@ pub struct ChartViewColors {
     /// View point stroke color.
     #[prost(message, optional, tag = "4")]
     pub point_stroke_color: ::core::option::Option<ChartElementColor>,
-}
-/// ChartSizes represents options to configure chart sizes.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ChartSizes {
-    /// Chart width.
-    #[prost(int32, tag = "1")]
-    pub width: i32,
-    /// Chart height.
-    #[prost(int32, tag = "2")]
-    pub height: i32,
-}
-/// ChartMargins represents options to configure chart margins.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ChartMargins {
-    /// Top margin.
-    #[prost(int32, tag = "1")]
-    pub margin_top: i32,
-    /// Bottom margin.
-    #[prost(int32, tag = "2")]
-    pub margin_bottom: i32,
-    /// Left margin.
-    #[prost(int32, tag = "3")]
-    pub margin_left: i32,
-    /// Right margin.
-    #[prost(int32, tag = "4")]
-    pub margin_right: i32,
-}
-/// ChartAxes represents options to configure chart axes.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ChartAxes {
-    /// Configured scale for top axis.
-    #[prost(message, optional, tag = "1")]
-    pub axis_top: ::core::option::Option<ChartScale>,
-    /// Label for top axis.
-    #[prost(string, tag = "2")]
-    pub axis_top_label: ::prost::alloc::string::String,
-    /// Configured scale for bottom axis.
-    #[prost(message, optional, tag = "3")]
-    pub axis_bottom: ::core::option::Option<ChartScale>,
-    /// Label for bottom axis.
-    #[prost(string, tag = "4")]
-    pub axis_bottom_label: ::prost::alloc::string::String,
-    /// Configured scale for left axis.
-    #[prost(message, optional, tag = "5")]
-    pub axis_left: ::core::option::Option<ChartScale>,
-    /// Label for left axis.
-    #[prost(string, tag = "6")]
-    pub axis_left_label: ::prost::alloc::string::String,
-    /// Configured scale for right axis.
-    #[prost(message, optional, tag = "7")]
-    pub axis_right: ::core::option::Option<ChartScale>,
-    /// Label for right axis.
-    #[prost(string, tag = "8")]
-    pub axis_right_label: ::prost::alloc::string::String,
 }
 /// RenderChartRequest represents chart rendering request.
 #[derive(Clone, PartialEq, ::prost::Message)]

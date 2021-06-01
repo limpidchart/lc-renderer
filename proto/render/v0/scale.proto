@@ -4,6 +4,8 @@ package render;
 
 option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
 
+import "google/protobuf/wrappers.proto";
+
 // ChartScale represents options to configure chart scale.
 message ChartScale {
   // ChartScaleKind contains available scale kinds.
@@ -17,10 +19,10 @@ message ChartScale {
   ChartScaleKind kind = 1;
 
   // Start of the scale range.
-  int32 range_start = 2;
+  google.protobuf.Int32Value range_start = 2;
 
   // End of the scale range.
-  int32 range_end = 3;
+  google.protobuf.Int32Value range_end = 3;
 
   // Start of the numeric scale domain.
   float domain_num_start = 4;
@@ -36,8 +38,8 @@ message ChartScale {
   bool no_boundaries_offset = 7;
 
   // Inner padding for categories.
-  float inner_padding = 8;
+  google.protobuf.FloatValue inner_padding = 8;
 
   // Outer padding for categories.
-  float outer_padding = 9;
+  google.protobuf.FloatValue outer_padding = 9;
 }

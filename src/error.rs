@@ -19,11 +19,11 @@ pub enum RendererError {
     /// Expected points values but got other kind.
     ExpectedPointsValues,
 
-    /// Bars values fill color is not provided.
-    ExpectedFillColorForBarsValues,
+    /// Bars values fill color is not specified.
+    FillColorForBarsValuesIsNotSpecified,
 
-    /// Bars values stroke color is not provided.
-    ExpectedStrokeColorForBarsValues,
+    /// Bars values stroke color is not specified.
+    StrokeColorForBarsValuesIsNotSpecified,
 
     /// Got unknown bar label position.
     BarLabelPositionIsUnknown,
@@ -40,32 +40,32 @@ pub enum RendererError {
     /// Left or right axis should be specified.
     LeftOrRightAxisShouldBeSpecified,
 
-    /// Expected configured fill color for area view.
-    ExpectedFillColorForAreaView,
+    /// Fill color for area view is not specified.
+    FillColorForAreaViewIsNotSpecified,
 
-    /// Expected configured stroke color for area view.
-    ExpectedStrokeColorForAreaView,
+    /// Stroke color for area view is not specified.
+    StrokeColorForAreaViewIsNotSpecified,
 
-    /// Expected configured point fill color for area view.
-    ExpectedPointFillColorForAreaView,
+    /// Point fill color for area view is not specified.
+    PointFillColorForAreaViewIsNotSpecified,
 
-    /// Expected configured point stroke color for area view.
-    ExpectedPointStrokeColorForAreaView,
+    /// Point stroke color for area view is not specified.
+    PointStrokeColorForAreaViewIsNotSpecified,
 
-    /// Expected configured stroke color for line view.
-    ExpectedStrokeColorForLineView,
+    /// Stroke color for line view is not specified.
+    StrokeColorForLineViewIsNotSpecified,
 
-    /// Expected configured point fill color for line view.
-    ExpectedPointFillColorForLineView,
+    /// Point fill color for line view is not specified.
+    PointFillColorForLineViewIsNotSpecified,
 
-    /// Expected configured point stroke color for line view.
-    ExpectedPointStrokeColorForLineView,
+    /// Point stroke color for line view is not specified.
+    PointStrokeColorForLineViewIsNotSpecified,
 
-    /// Expected configured point fill color for scatter view.
-    ExpectedPointFillColorForScatterView,
+    /// Point fill color for scatter view is not specified.
+    PointFillColorForScatterViewIsNotSpecified,
 
-    /// Expected configured point stroke color for scatter view.
-    ExpectedPointStrokeColorForScatterView,
+    /// Point stroke color for scatter view is not specified.
+    PointStrokeColorForScatterViewIsNotSpecified,
 
     /// View kind is unknown.
     ViewKindIsUnknown,
@@ -76,8 +76,26 @@ pub enum RendererError {
     /// Chart sizes are not specified.
     ChartSizesAreNotSpecified,
 
+    /// Chart width is not specified.
+    ChartWidthIsNotSpecified,
+
+    /// Chart height is not specified.
+    ChartHeightIsNotSpecified,
+
     /// Chart margins are not specified.
     ChartMarginsAreNotSpecified,
+
+    /// Chart top margin is not specified.
+    ChartTopMarginIsNotSpecified,
+
+    /// Chart bottom margin is not specified.
+    ChartBottomMarginIsNotSpecified,
+
+    /// Chart left margin is not specified.
+    ChartLeftMarginIsNotSpecified,
+
+    /// Chart right margin is not specified.
+    ChartRightMarginIsNotSpecified,
 
     /// Top axis is set but it's not of band or linear kind
     TopAxisIsSetButItsNotBandOrLinear,
@@ -90,6 +108,42 @@ pub enum RendererError {
 
     /// Right axis is set but it's not of band or linear kind
     RightAxisIsSetButItsNotBandOrLinear,
+
+    /// Point visibility for area view is not specified.
+    PointVisibilityForAreaViewIsNotSpecified,
+
+    /// Point label visibility for area view is not specified.
+    PointLabelVisibilityForAreaViewIsNotSpecified,
+
+    /// Point visibility for line view is not specified.
+    PointVisibilityForLineViewIsNotSpecified,
+
+    /// Point label visibility for line view is not specified.
+    PointLabelVisibilityForLineViewIsNotSpecified,
+
+    /// Point visibility for scatter view is not specified.
+    PointVisibilityForScatterViewIsNotSpecified,
+
+    /// Point label visibility for scatter view is not specified.
+    PointLabelVisibilityForScatterViewIsNotSpecified,
+
+    /// Bar label visibility for horizontal bar is not specified.
+    BarLabelVisibilityForHorizontalBarViewIsNotSpecified,
+
+    /// Bar label visibility for vertical bar is not specified.
+    BarLabelVisibilityForVerticalBarViewIsNotSpecified,
+
+    /// Range start for scale is not specified.
+    ScaleRangeStartIsNotSpecified,
+
+    /// Range end for scale is not specified.
+    ScaleRangeEndIsNotSpecified,
+
+    /// Band scale inner padding is not specified.
+    BandScaleInnerPaddingIsNotSpecified,
+
+    /// Band scale outer padding is not specified.
+    BandScaleOuterPaddingIsNotSpecified,
 }
 
 impl std::fmt::Display for RendererError {
@@ -97,10 +151,10 @@ impl std::fmt::Display for RendererError {
         match &*self {
             RendererError::RenderError(e) => e.fmt(f),
             RendererError::ViewColorsAreNotSpecified => {
-                "view colors should be specified".to_string().fmt(f)
+                "view colors are not specified".to_string().fmt(f)
             }
             RendererError::ViewValuesAreNotSpecified => {
-                "view values should be specified".to_string().fmt(f)
+                "view values are not specified".to_string().fmt(f)
             }
             RendererError::ExpectedScalarValues => {
                 "expected scalar values for view".to_string().fmt(f)
@@ -109,11 +163,15 @@ impl std::fmt::Display for RendererError {
             RendererError::ExpectedPointsValues => {
                 "expected points values for view".to_string().fmt(f)
             }
-            RendererError::ExpectedFillColorForBarsValues => {
-                "expected fill color for bars values".to_string().fmt(f)
+            RendererError::FillColorForBarsValuesIsNotSpecified => {
+                "fill color for bars values is not specified"
+                    .to_string()
+                    .fmt(f)
             }
-            RendererError::ExpectedStrokeColorForBarsValues => {
-                "expected stroke color for bars values".to_string().fmt(f)
+            RendererError::StrokeColorForBarsValuesIsNotSpecified => {
+                "stroke color for bars values is not specified"
+                    .to_string()
+                    .fmt(f)
             }
             RendererError::BarLabelPositionIsUnknown => {
                 "view bar label position is unknown".to_string().fmt(f)
@@ -128,50 +186,78 @@ impl std::fmt::Display for RendererError {
             RendererError::LeftOrRightAxisShouldBeSpecified => {
                 "left or right axis should be specified".to_string().fmt(f)
             }
-            RendererError::ExpectedFillColorForAreaView => {
-                "expected fill color for area view".to_string().fmt(f)
-            }
-            RendererError::ExpectedStrokeColorForAreaView => {
-                "expected stroke color for area view".to_string().fmt(f)
-            }
-            RendererError::ExpectedPointFillColorForAreaView => {
-                "expected point fill color for area view".to_string().fmt(f)
-            }
-            RendererError::ExpectedPointStrokeColorForAreaView => {
-                "expected point stroke color for area view"
+            RendererError::FillColorForAreaViewIsNotSpecified => {
+                "fill color for area view is not specified"
                     .to_string()
                     .fmt(f)
             }
-            RendererError::ExpectedStrokeColorForLineView => {
-                "expected stroke color for line view".to_string().fmt(f)
-            }
-            RendererError::ExpectedPointFillColorForLineView => {
-                "expected point fill color for line view".to_string().fmt(f)
-            }
-            RendererError::ExpectedPointStrokeColorForLineView => {
-                "expected point stroke color for line view"
+            RendererError::StrokeColorForAreaViewIsNotSpecified => {
+                "stroke color for area view is not specified"
                     .to_string()
                     .fmt(f)
             }
-            RendererError::ExpectedPointFillColorForScatterView => {
-                "expected point fill color for scatter view"
+            RendererError::PointFillColorForAreaViewIsNotSpecified => {
+                "point fill color for area view is not specified"
                     .to_string()
                     .fmt(f)
             }
-            RendererError::ExpectedPointStrokeColorForScatterView => {
-                "expected point stroke color for scatter view"
+            RendererError::PointStrokeColorForAreaViewIsNotSpecified => {
+                "point stroke color for area view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::StrokeColorForLineViewIsNotSpecified => {
+                "stroke color for line view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointFillColorForLineViewIsNotSpecified => {
+                "point fill color for line view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointStrokeColorForLineViewIsNotSpecified => {
+                "point stroke color for line view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointFillColorForScatterViewIsNotSpecified => {
+                "point fill color for scatter view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointStrokeColorForScatterViewIsNotSpecified => {
+                "point stroke color for scatter view is not specified"
                     .to_string()
                     .fmt(f)
             }
             RendererError::ViewKindIsUnknown => "view kind is unknown".to_string().fmt(f),
             RendererError::ChartAxesAreNotSpecified => {
-                "chart axes should be specified".to_string().fmt(f)
+                "chart axes are not be specified".to_string().fmt(f)
             }
             RendererError::ChartSizesAreNotSpecified => {
-                "chart sizes should be specified".to_string().fmt(f)
+                "chart sizes are not specified".to_string().fmt(f)
+            }
+            RendererError::ChartWidthIsNotSpecified => {
+                "chart width is not specified".to_string().fmt(f)
+            }
+            RendererError::ChartHeightIsNotSpecified => {
+                "chart height is not specified".to_string().fmt(f)
             }
             RendererError::ChartMarginsAreNotSpecified => {
-                "chart mergins should be specified".to_string().fmt(f)
+                "chart margins are not specified".to_string().fmt(f)
+            }
+            RendererError::ChartTopMarginIsNotSpecified => {
+                "chart top margin is not specified".to_string().fmt(f)
+            }
+            RendererError::ChartBottomMarginIsNotSpecified => {
+                "chart bottom margin is not specified".to_string().fmt(f)
+            }
+            RendererError::ChartLeftMarginIsNotSpecified => {
+                "chart left margin is not specified".to_string().fmt(f)
+            }
+            RendererError::ChartRightMarginIsNotSpecified => {
+                "chart right margin is not specified".to_string().fmt(f)
             }
             RendererError::TopAxisIsSetButItsNotBandOrLinear => {
                 "top axis is set but it's not of band or linear kind"
@@ -190,6 +276,62 @@ impl std::fmt::Display for RendererError {
             }
             RendererError::RightAxisIsSetButItsNotBandOrLinear => {
                 "right axis is set but it's not of band or linear kind"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointVisibilityForAreaViewIsNotSpecified => {
+                "point visibility for area view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointLabelVisibilityForAreaViewIsNotSpecified => {
+                "point label visibility for area view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointVisibilityForLineViewIsNotSpecified => {
+                "point visibility for line view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointLabelVisibilityForLineViewIsNotSpecified => {
+                "point label visibility for line view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointVisibilityForScatterViewIsNotSpecified => {
+                "point visibility for scatter view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::PointLabelVisibilityForScatterViewIsNotSpecified => {
+                "point label visibility for scatter view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::BarLabelVisibilityForHorizontalBarViewIsNotSpecified => {
+                "bar label visibility for horizontal bar view is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::BarLabelVisibilityForVerticalBarViewIsNotSpecified => {
+                "bar label visibility for vertical bar is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::ScaleRangeStartIsNotSpecified => {
+                "range start for scale is not specified".to_string().fmt(f)
+            }
+            RendererError::ScaleRangeEndIsNotSpecified => {
+                "range end for scale is not specified".to_string().fmt(f)
+            }
+            RendererError::BandScaleInnerPaddingIsNotSpecified => {
+                "inner padding for band scale is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::BandScaleOuterPaddingIsNotSpecified => {
+                "outer padding for band scale is not specified"
                     .to_string()
                     .fmt(f)
             }

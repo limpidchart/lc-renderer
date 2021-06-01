@@ -3,15 +3,13 @@ use crate::color::get_view_colors;
 use crate::error::RendererError;
 use crate::point::{get_point_label_position, get_point_type};
 use crate::proto::render::chart_view::ChartViewKind;
-use crate::proto::render::{ChartMargins, ChartScale, ChartSizes, ChartView};
+use crate::proto::render::{ChartScale, ChartView};
 use crate::scale::{get_band_h_scale, get_band_v_scale, get_linear_h_scale, get_linear_v_scale};
 use crate::value::{get_bars_values, get_points_values, get_scalar_values};
 use lc_render::{AreaView, HorizontalBarView, LineView, ScatterView, VerticalBarView, View};
 
 pub(crate) fn get_views(
     views: &[ChartView],
-    sizes: &ChartSizes,
-    margins: &ChartMargins,
     h_scale: &ChartScale,
     v_scale: &ChartScale,
 ) -> Result<Vec<Box<dyn View>>, RendererError> {
@@ -20,25 +18,23 @@ pub(crate) fn get_views(
     for proto_view in views.iter() {
         match ChartViewKind::from_i32(proto_view.kind) {
             Some(ChartViewKind::Area) => {
-                let area_view = get_area_view(proto_view, sizes, margins, h_scale, v_scale)?;
+                let area_view = get_area_view(proto_view, h_scale, v_scale)?;
                 result.push(Box::new(area_view));
             }
             Some(ChartViewKind::HorizontalBar) => {
-                let horizontal_bar_view =
-                    get_horizontal_bar_view(proto_view, sizes, margins, h_scale, v_scale)?;
+                let horizontal_bar_view = get_horizontal_bar_view(proto_view, h_scale, v_scale)?;
                 result.push(Box::new(horizontal_bar_view));
             }
             Some(ChartViewKind::Line) => {
-                let line_view = get_line_view(proto_view, sizes, margins, h_scale, v_scale)?;
+                let line_view = get_line_view(proto_view, h_scale, v_scale)?;
                 result.push(Box::new(line_view));
             }
             Some(ChartViewKind::Scatter) => {
-                let scatter_view = get_scatter_view(proto_view, sizes, margins, h_scale, v_scale)?;
+                let scatter_view = get_scatter_view(proto_view, h_scale, v_scale)?;
                 result.push(Box::new(scatter_view));
             }
             Some(ChartViewKind::VerticalBar) => {
-                let vertical_bar_view =
-                    get_vertical_bar_view(proto_view, sizes, margins, h_scale, v_scale)?;
+                let vertical_bar_view = get_vertical_bar_view(proto_view, h_scale, v_scale)?;
                 result.push(Box::new(vertical_bar_view));
             }
             _ => return Err(RendererError::ViewKindIsUnknown),
@@ -50,32 +46,44 @@ pub(crate) fn get_views(
 
 fn get_area_view(
     view: &ChartView,
-    sizes: &ChartSizes,
-    margins: &ChartMargins,
     h_scale: &ChartScale,
     v_scale: &ChartScale,
 ) -> Result<AreaView, RendererError> {
     let values = get_scalar_values(view)?;
-    let x_scale = get_band_h_scale(&h_scale, &sizes, &margins);
-    let y_scale = get_linear_v_scale(&v_scale, &sizes, &margins);
+    let x_scale = match get_band_h_scale(&h_scale) {
+        Ok(x_scale) => x_scale,
+        Err(err) => return Err(err),
+    };
+    let y_scale = match get_linear_v_scale(&v_scale) {
+        Ok(y_scale) => y_scale,
+        Err(err) => return Err(err),
+    };
     let point_type = get_point_type(view)?;
     let point_label_position = get_point_label_position(view)?;
     let view_colors = get_view_colors(view.colors.clone())?;
     let fill_color = match view_colors.fill_color {
         Some(fill_color) => fill_color,
-        None => return Err(RendererError::ExpectedFillColorForAreaView),
+        None => return Err(RendererError::FillColorForAreaViewIsNotSpecified),
     };
     let stroke_color = match view_colors.stroke_color {
         Some(stroke_color) => stroke_color,
-        None => return Err(RendererError::ExpectedStrokeColorForAreaView),
+        None => return Err(RendererError::StrokeColorForAreaViewIsNotSpecified),
     };
     let point_fill_color = match view_colors.point_fill_color {
         Some(point_fill_color) => point_fill_color,
-        None => return Err(RendererError::ExpectedPointFillColorForAreaView),
+        None => return Err(RendererError::PointFillColorForAreaViewIsNotSpecified),
     };
     let point_stroke_color = match view_colors.point_stroke_color {
         Some(point_stroke_color) => point_stroke_color,
-        None => return Err(RendererError::ExpectedPointStrokeColorForAreaView),
+        None => return Err(RendererError::PointStrokeColorForAreaViewIsNotSpecified),
+    };
+    let point_visible = match view.point_visible {
+        Some(point_visible) => point_visible,
+        None => return Err(RendererError::PointVisibilityForAreaViewIsNotSpecified),
+    };
+    let point_label_visible = match view.point_label_visible {
+        Some(point_label_visible) => point_label_visible,
+        None => return Err(RendererError::PointLabelVisibilityForAreaViewIsNotSpecified),
     };
     let area_view = match AreaView::new(x_scale, y_scale)
         .set_fill_color(fill_color)
@@ -83,13 +91,13 @@ fn get_area_view(
         .set_point_fill_color(point_fill_color)
         .set_point_stroke_color(point_stroke_color)
         .set_point_type(point_type)
-        .set_point_visible(view.point_visible)
-        .set_point_label_visible(view.point_label_visible)
+        .set_point_visible(point_visible)
+        .set_point_label_visible(point_label_visible)
         .set_point_label_position(point_label_position)
         .set_data(&values)
     {
         Ok(area_view) => area_view,
-        Err(e) => return Err(RendererError::RenderError(e)),
+        Err(err) => return Err(RendererError::RenderError(err)),
     };
 
     Ok(area_view)
@@ -97,22 +105,30 @@ fn get_area_view(
 
 fn get_horizontal_bar_view(
     view: &ChartView,
-    sizes: &ChartSizes,
-    margins: &ChartMargins,
     h_scale: &ChartScale,
     v_scale: &ChartScale,
 ) -> Result<HorizontalBarView, RendererError> {
     let values = get_bars_values(view)?;
-    let x_scale = get_linear_h_scale(&h_scale, &sizes, &margins);
-    let y_scale = get_band_v_scale(&v_scale, &sizes, &margins);
+    let x_scale = match get_linear_h_scale(&h_scale) {
+        Ok(x_scale) => x_scale,
+        Err(err) => return Err(err),
+    };
+    let y_scale = match get_band_v_scale(&v_scale) {
+        Ok(y_scale) => y_scale,
+        Err(err) => return Err(err),
+    };
     let bar_label_position = get_bar_label_position(view)?;
+    let bar_label_visible = match view.bar_label_visible {
+        Some(bar_label_visible) => bar_label_visible,
+        None => return Err(RendererError::BarLabelVisibilityForHorizontalBarViewIsNotSpecified),
+    };
     let horizontal_bar_view = match HorizontalBarView::new(x_scale, y_scale)
-        .set_bar_label_visible(view.bar_label_visible)
+        .set_bar_label_visible(bar_label_visible)
         .set_bar_label_position(bar_label_position)
         .set_data(&values)
     {
         Ok(horizontal_bar_view) => horizontal_bar_view,
-        Err(e) => return Err(RendererError::RenderError(e)),
+        Err(err) => return Err(RendererError::RenderError(err)),
     };
 
     Ok(horizontal_bar_view)
@@ -120,41 +136,53 @@ fn get_horizontal_bar_view(
 
 fn get_line_view(
     view: &ChartView,
-    sizes: &ChartSizes,
-    margins: &ChartMargins,
     h_scale: &ChartScale,
     v_scale: &ChartScale,
 ) -> Result<LineView, RendererError> {
     let values = get_scalar_values(view)?;
-    let x_scale = get_band_h_scale(&h_scale, &sizes, &margins);
-    let y_scale = get_linear_v_scale(&v_scale, &sizes, &margins);
+    let x_scale = match get_band_h_scale(&h_scale) {
+        Ok(x_scale) => x_scale,
+        Err(err) => return Err(err),
+    };
+    let y_scale = match get_linear_v_scale(&v_scale) {
+        Ok(y_scale) => y_scale,
+        Err(err) => return Err(err),
+    };
     let point_type = get_point_type(view)?;
     let point_label_position = get_point_label_position(view)?;
     let view_colors = get_view_colors(view.colors.clone())?;
     let stroke_color = match view_colors.stroke_color {
         Some(stroke_color) => stroke_color,
-        None => return Err(RendererError::ExpectedStrokeColorForLineView),
+        None => return Err(RendererError::StrokeColorForLineViewIsNotSpecified),
     };
     let point_fill_color = match view_colors.point_fill_color {
         Some(point_fill_color) => point_fill_color,
-        None => return Err(RendererError::ExpectedPointFillColorForLineView),
+        None => return Err(RendererError::PointFillColorForLineViewIsNotSpecified),
     };
     let point_stroke_color = match view_colors.point_stroke_color {
         Some(point_stroke_color) => point_stroke_color,
-        None => return Err(RendererError::ExpectedPointStrokeColorForLineView),
+        None => return Err(RendererError::PointStrokeColorForLineViewIsNotSpecified),
+    };
+    let point_visible = match view.point_visible {
+        Some(point_visible) => point_visible,
+        None => return Err(RendererError::PointVisibilityForLineViewIsNotSpecified),
+    };
+    let point_label_visible = match view.point_label_visible {
+        Some(point_label_visible) => point_label_visible,
+        None => return Err(RendererError::PointLabelVisibilityForLineViewIsNotSpecified),
     };
     let line_view = match LineView::new(x_scale, y_scale)
         .set_stroke_color(stroke_color)
         .set_point_fill_color(point_fill_color)
         .set_point_stroke_color(point_stroke_color)
         .set_point_type(point_type)
-        .set_point_visible(view.point_visible)
-        .set_point_label_visible(view.point_label_visible)
+        .set_point_visible(point_visible)
+        .set_point_label_visible(point_label_visible)
         .set_point_label_position(point_label_position)
         .set_data(&values)
     {
         Ok(line_view) => line_view,
-        Err(e) => return Err(RendererError::RenderError(e)),
+        Err(err) => return Err(RendererError::RenderError(err)),
     };
 
     Ok(line_view)
@@ -162,36 +190,48 @@ fn get_line_view(
 
 fn get_scatter_view(
     view: &ChartView,
-    sizes: &ChartSizes,
-    margins: &ChartMargins,
     h_scale: &ChartScale,
     v_scale: &ChartScale,
 ) -> Result<ScatterView, RendererError> {
     let values = get_points_values(view)?;
-    let x_scale = get_linear_h_scale(&h_scale, &sizes, &margins);
-    let y_scale = get_linear_v_scale(&v_scale, &sizes, &margins);
+    let x_scale = match get_linear_h_scale(&h_scale) {
+        Ok(x_scale) => x_scale,
+        Err(err) => return Err(err),
+    };
+    let y_scale = match get_linear_v_scale(&v_scale) {
+        Ok(y_scale) => y_scale,
+        Err(err) => return Err(err),
+    };
     let point_type = get_point_type(view)?;
     let point_label_position = get_point_label_position(view)?;
     let view_colors = get_view_colors(view.colors.clone())?;
     let point_fill_color = match view_colors.point_fill_color {
         Some(point_fill_color) => point_fill_color,
-        None => return Err(RendererError::ExpectedPointFillColorForScatterView),
+        None => return Err(RendererError::PointFillColorForScatterViewIsNotSpecified),
     };
     let point_stroke_color = match view_colors.point_stroke_color {
         Some(point_stroke_color) => point_stroke_color,
-        None => return Err(RendererError::ExpectedPointStrokeColorForScatterView),
+        None => return Err(RendererError::PointStrokeColorForScatterViewIsNotSpecified),
+    };
+    let point_visible = match view.point_visible {
+        Some(point_visible) => point_visible,
+        None => return Err(RendererError::PointVisibilityForScatterViewIsNotSpecified),
+    };
+    let point_label_visible = match view.point_label_visible {
+        Some(point_label_visible) => point_label_visible,
+        None => return Err(RendererError::PointLabelVisibilityForScatterViewIsNotSpecified),
     };
     let scatter_view = match ScatterView::new(x_scale, y_scale)
         .set_point_fill_color(point_fill_color)
         .set_point_stroke_color(point_stroke_color)
         .set_point_type(point_type)
-        .set_point_visible(view.point_visible)
-        .set_point_label_visible(view.point_label_visible)
+        .set_point_visible(point_visible)
+        .set_point_label_visible(point_label_visible)
         .set_point_label_position(point_label_position)
         .set_data(&values)
     {
         Ok(scatter_view) => scatter_view,
-        Err(e) => return Err(RendererError::RenderError(e)),
+        Err(err) => return Err(RendererError::RenderError(err)),
     };
 
     Ok(scatter_view)
@@ -199,22 +239,30 @@ fn get_scatter_view(
 
 fn get_vertical_bar_view(
     view: &ChartView,
-    sizes: &ChartSizes,
-    margins: &ChartMargins,
     h_scale: &ChartScale,
     v_scale: &ChartScale,
 ) -> Result<VerticalBarView, RendererError> {
     let values = get_bars_values(view)?;
-    let x_scale = get_band_v_scale(&h_scale, &sizes, &margins);
-    let y_scale = get_linear_h_scale(&v_scale, &sizes, &margins);
+    let x_scale = match get_band_h_scale(&h_scale) {
+        Ok(x_scale) => x_scale,
+        Err(err) => return Err(err),
+    };
+    let y_scale = match get_linear_v_scale(&v_scale) {
+        Ok(y_scale) => y_scale,
+        Err(err) => return Err(err),
+    };
     let bar_label_position = get_bar_label_position(view)?;
+    let bar_label_visible = match view.bar_label_visible {
+        Some(bar_label_visible) => bar_label_visible,
+        None => return Err(RendererError::BarLabelVisibilityForVerticalBarViewIsNotSpecified),
+    };
     let vertical_bar_view = match VerticalBarView::new(x_scale, y_scale)
-        .set_bar_label_visible(view.bar_label_visible)
+        .set_bar_label_visible(bar_label_visible)
         .set_bar_label_position(bar_label_position)
         .set_data(&values)
     {
         Ok(vertical_bar_view) => vertical_bar_view,
-        Err(e) => return Err(RendererError::RenderError(e)),
+        Err(err) => return Err(RendererError::RenderError(err)),
     };
 
     Ok(vertical_bar_view)
@@ -252,47 +300,31 @@ mod tests {
         }
     }
 
-    fn chart_sizes() -> ChartSizes {
-        ChartSizes {
-            width: 1000,
-            height: 800,
-        }
-    }
-
-    fn chart_margins() -> ChartMargins {
-        ChartMargins {
-            margin_top: 20,
-            margin_bottom: 70,
-            margin_left: 40,
-            margin_right: 30,
-        }
-    }
-
     fn chart_scale_linear() -> ChartScale {
         ChartScale {
             kind: ChartScaleKind::Linear as i32,
-            range_start: 0,
-            range_end: 100,
+            range_start: Some(0),
+            range_end: Some(100),
             domain_num_start: 200_f32,
             domain_num_end: 800_f32,
             domain_categories: Vec::new(),
             no_boundaries_offset: false,
-            inner_padding: 0.1_f32,
-            outer_padding: 0.1_f32,
+            inner_padding: Some(0.1_f32),
+            outer_padding: Some(0.1_f32),
         }
     }
 
     fn chart_scale_band() -> ChartScale {
         ChartScale {
             kind: ChartScaleKind::Band as i32,
-            range_start: 0,
-            range_end: 100,
+            range_start: Some(0),
+            range_end: Some(100),
             domain_num_start: 0_f32,
             domain_num_end: 0_f32,
             domain_categories: vec!["a".to_string(), "b".to_string()],
             no_boundaries_offset: false,
-            inner_padding: 0.1_f32,
-            outer_padding: 0.1_f32,
+            inner_padding: Some(0.1_f32),
+            outer_padding: Some(0.1_f32),
         }
     }
 
@@ -302,11 +334,11 @@ mod tests {
             x_scale: None,
             y_scale: None,
             colors: Some(chart_view_colors()),
-            bar_label_visible: false,
+            bar_label_visible: Some(false),
             bar_label_position: 0,
-            point_visible: false,
+            point_visible: Some(false),
             point_type: 0,
-            point_label_visible: false,
+            point_label_visible: Some(false),
             point_label_position: 0,
             values: None,
         }
@@ -320,17 +352,10 @@ mod tests {
         }));
         view.point_type = ChartViewPointType::X as i32;
         view.point_label_position = ChartViewPointLabelPosition::BottomLeft as i32;
-        view.point_visible = true;
-        view.point_label_visible = true;
+        view.point_visible = Some(true);
+        view.point_label_visible = Some(true);
 
-        get_area_view(
-            &view,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_band(),
-            &chart_scale_linear(),
-        )
-        .unwrap();
+        get_area_view(&view, &chart_scale_band(), &chart_scale_linear()).unwrap();
     }
 
     #[test]
@@ -347,17 +372,10 @@ mod tests {
                 }),
             }],
         }));
-        view.bar_label_visible = true;
+        view.bar_label_visible = Some(true);
         view.bar_label_position = ChartViewBarLabelPosition::EndOutside as i32;
 
-        get_horizontal_bar_view(
-            &view,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_linear(),
-            &chart_scale_band(),
-        )
-        .unwrap();
+        get_horizontal_bar_view(&view, &chart_scale_linear(), &chart_scale_band()).unwrap();
     }
 
     #[test]
@@ -368,17 +386,10 @@ mod tests {
         }));
         view.point_type = ChartViewPointType::Square as i32;
         view.point_label_position = ChartViewPointLabelPosition::TopLeft as i32;
-        view.point_visible = true;
-        view.point_label_visible = true;
+        view.point_visible = Some(true);
+        view.point_label_visible = Some(true);
 
-        get_line_view(
-            &view,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_band(),
-            &chart_scale_linear(),
-        )
-        .unwrap();
+        get_line_view(&view, &chart_scale_band(), &chart_scale_linear()).unwrap();
     }
 
     #[test]
@@ -395,17 +406,10 @@ mod tests {
         }));
         view.point_type = ChartViewPointType::Circle as i32;
         view.point_label_position = ChartViewPointLabelPosition::TopRight as i32;
-        view.point_visible = true;
-        view.point_label_visible = true;
+        view.point_visible = Some(true);
+        view.point_label_visible = Some(true);
 
-        get_scatter_view(
-            &view,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_band(),
-            &chart_scale_linear(),
-        )
-        .unwrap();
+        get_scatter_view(&view, &chart_scale_band(), &chart_scale_linear()).unwrap();
     }
 
     #[test]
@@ -422,17 +426,10 @@ mod tests {
                 }),
             }],
         }));
-        view.bar_label_visible = true;
+        view.bar_label_visible = Some(true);
         view.bar_label_position = ChartViewBarLabelPosition::StartInside as i32;
 
-        get_vertical_bar_view(
-            &view,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_band(),
-            &chart_scale_linear(),
-        )
-        .unwrap();
+        get_vertical_bar_view(&view, &chart_scale_band(), &chart_scale_linear()).unwrap();
     }
 
     #[test]
@@ -443,8 +440,8 @@ mod tests {
         }));
         line_view.point_type = ChartViewPointType::Circle as i32;
         line_view.point_label_position = ChartViewPointLabelPosition::Right as i32;
-        line_view.point_visible = true;
-        line_view.point_label_visible = true;
+        line_view.point_visible = Some(true);
+        line_view.point_label_visible = Some(true);
         line_view.kind = ChartViewKind::Line as i32;
 
         let mut vertical_bar_view = chart_view_empty();
@@ -459,33 +456,19 @@ mod tests {
                 }),
             }],
         }));
-        vertical_bar_view.bar_label_visible = true;
+        vertical_bar_view.bar_label_visible = Some(true);
         vertical_bar_view.bar_label_position = ChartViewBarLabelPosition::Center as i32;
         vertical_bar_view.kind = ChartViewKind::VerticalBar as i32;
 
         let views = vec![line_view, vertical_bar_view];
 
-        get_views(
-            &views,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_band(),
-            &chart_scale_linear(),
-        )
-        .unwrap();
+        get_views(&views, &chart_scale_band(), &chart_scale_linear()).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn get_views_err() {
         let views = vec![chart_view_empty()];
-        get_views(
-            &views,
-            &chart_sizes(),
-            &chart_margins(),
-            &chart_scale_linear(),
-            &chart_scale_band(),
-        )
-        .unwrap();
+        get_views(&views, &chart_scale_linear(), &chart_scale_band()).unwrap();
     }
 }

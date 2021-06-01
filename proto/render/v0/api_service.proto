@@ -4,9 +4,10 @@ package render;
 
 option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
 
-import "google/protobuf/timestamp.proto";
 import "chart.proto";
 import "view.proto";
+
+import "google/protobuf/timestamp.proto";
 
 // ChartStatus contains available chart statuses.
 enum ChartStatus {
