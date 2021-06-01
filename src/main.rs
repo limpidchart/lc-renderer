@@ -12,10 +12,12 @@ use tonic::transport::Server;
 mod bar;
 mod color;
 mod error;
+mod margin;
 mod point;
 mod proto;
 mod renderer;
 mod scale;
+mod size;
 mod value;
 mod view;
 

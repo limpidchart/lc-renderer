@@ -5,30 +5,31 @@ package render;
 option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
 
 import "scale.proto";
-import "view.proto";
+
+import "google/protobuf/wrappers.proto";
 
 // ChartSizes represents options to configure chart sizes.
 message ChartSizes {
   // Chart width.
-  int32 width = 1;
+  google.protobuf.Int32Value width = 1;
 
   // Chart height.
-  int32 height = 2;
+  google.protobuf.Int32Value height = 2;
 }
 
 // ChartMargins represents options to configure chart margins.
 message ChartMargins {
   // Top margin.
-  int32 margin_top = 1;
+  google.protobuf.Int32Value margin_top = 1;
 
   // Bottom margin.
-  int32 margin_bottom = 2;
+  google.protobuf.Int32Value margin_bottom = 2;
 
   // Left margin.
-  int32 margin_left = 3;
+  google.protobuf.Int32Value margin_left = 3;
 
   // Right margin.
-  int32 margin_right = 4;
+  google.protobuf.Int32Value margin_right = 4;
 }
 
 // ChartAxes represents options to configure chart axes.

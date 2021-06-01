@@ -1,11 +1,12 @@
 use crate::error::RendererError;
+use crate::margin::get_margins;
 use crate::proto::render::chart_renderer_server::ChartRenderer;
-use crate::proto::render::chart_scale::ChartScaleKind;
 use crate::proto::render::{RenderChartReply, RenderChartRequest};
 use crate::scale::{
-    get_band_h_scale, get_band_v_scale, get_h_scale, get_linear_h_scale, get_linear_v_scale,
-    get_v_scale,
+    get_h_scale, get_v_scale, set_chart_bottom_axis, set_chart_left_axis, set_chart_right_axis,
+    set_chart_top_axis,
 };
+use crate::size::get_sizes;
 use crate::view::get_views;
 use lc_render::Chart;
 use tonic::{Request, Response, Status};
@@ -38,7 +39,7 @@ impl ChartRenderer for RendererServer {
         // Prepare request logger with request_id set.
         let log = self.log.new(o!(LOG_KEY_REQ_ID => r_req.request_id.clone()));
 
-        // Get the needed parts that are required to render a chart.
+        // Get chart scales.
         let axes = match r_req.axes {
             Some(axes) => axes,
             None => {
@@ -63,23 +64,29 @@ impl ChartRenderer for RendererServer {
                 return Err(Status::invalid_argument(err));
             }
         };
-        let sizes = match r_req.sizes {
-            Some(sizes) => sizes,
-            None => {
-                let err = RendererError::ChartSizesAreNotSpecified.to_string();
+
+        // Get chart sizes.
+        let sizes = match get_sizes(r_req.sizes) {
+            Ok(sizes) => sizes,
+            Err(err) => {
+                let err = err.to_string();
                 error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
                 return Err(Status::invalid_argument(err));
             }
         };
-        let margins = match r_req.margins {
-            Some(margins) => margins,
-            None => {
-                let err = RendererError::ChartMarginsAreNotSpecified.to_string();
+
+        // Get chart margins.
+        let margins = match get_margins(r_req.margins) {
+            Ok(margins) => margins,
+            Err(err) => {
+                let err = err.to_string();
                 error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
                 return Err(Status::invalid_argument(err));
             }
         };
-        let chart_views = match get_views(&r_req.views, &sizes, &margins, &h_scale, &v_scale) {
+
+        // Get chart views.
+        let chart_views = match get_views(&r_req.views, &h_scale, &v_scale) {
             Ok(chart_views) => chart_views,
             Err(err) => {
                 let err = err.to_string();
@@ -92,83 +99,51 @@ impl ChartRenderer for RendererServer {
         let mut chart = Chart::new()
             .set_width(sizes.width)
             .set_height(sizes.height)
-            .set_margin_top(margins.margin_top)
-            .set_margin_bottom(margins.margin_bottom)
-            .set_margin_left(margins.margin_left)
-            .set_margin_right(margins.margin_right)
+            .set_margin_top(margins.top)
+            .set_margin_bottom(margins.bottom)
+            .set_margin_left(margins.left)
+            .set_margin_right(margins.right)
             .set_title(&r_req.title)
             .set_views(chart_views.iter().map(Box::as_ref).collect());
 
         // Set the needed top axis.
-        chart = match axes.axis_top {
-            Some(_) => match ChartScaleKind::from_i32(h_scale.kind) {
-                Some(ChartScaleKind::Band) => chart
-                    .set_axis_top_band(get_band_h_scale(&h_scale, &sizes, &margins))
-                    .set_axis_top_label(&*axes.axis_top_label),
-                Some(ChartScaleKind::Linear) => chart
-                    .set_axis_top_linear(get_linear_h_scale(&h_scale, &sizes, &margins))
-                    .set_axis_top_label(&*axes.axis_top_label),
-                _ => {
-                    let err = RendererError::TopAxisIsSetButItsNotBandOrLinear.to_string();
-                    error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
-                    return Err(Status::invalid_argument(err));
-                }
-            },
-            _ => chart,
+        chart = match set_chart_top_axis(chart, axes.axis_top, axes.axis_top_label) {
+            Ok(chart) => chart,
+            Err(err) => {
+                let err = err.to_string();
+                error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
+                return Err(Status::invalid_argument(err));
+            }
         };
 
         // Set the needed bottom axis.
-        chart = match axes.axis_bottom {
-            Some(_) => match ChartScaleKind::from_i32(h_scale.kind) {
-                Some(ChartScaleKind::Band) => chart
-                    .set_axis_bottom_band(get_band_h_scale(&h_scale, &sizes, &margins))
-                    .set_axis_bottom_label(&*axes.axis_bottom_label),
-                Some(ChartScaleKind::Linear) => chart
-                    .set_axis_bottom_linear(get_linear_h_scale(&h_scale, &sizes, &margins))
-                    .set_axis_bottom_label(&*axes.axis_bottom_label),
-                _ => {
-                    let err = RendererError::BottomAxisIsSetButItsNotBandOrLinear.to_string();
-                    error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
-                    return Err(Status::invalid_argument(err));
-                }
-            },
-            _ => chart,
+        chart = match set_chart_bottom_axis(chart, axes.axis_bottom, axes.axis_bottom_label) {
+            Ok(chart) => chart,
+            Err(err) => {
+                let err = err.to_string();
+                error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
+                return Err(Status::invalid_argument(err));
+            }
         };
 
         // Set the needed left axis.
-        chart = match axes.axis_left {
-            Some(_) => match ChartScaleKind::from_i32(v_scale.kind) {
-                Some(ChartScaleKind::Band) => chart
-                    .set_axis_left_band(get_band_v_scale(&v_scale, &sizes, &margins))
-                    .set_axis_left_label(&*axes.axis_left_label),
-                Some(ChartScaleKind::Linear) => chart
-                    .set_axis_left_linear(get_linear_v_scale(&v_scale, &sizes, &margins))
-                    .set_axis_left_label(&*axes.axis_left_label),
-                _ => {
-                    let err = RendererError::LeftAxisIsSetButItsNotBandOrLinear.to_string();
-                    error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
-                    return Err(Status::invalid_argument(err));
-                }
-            },
-            _ => chart,
+        chart = match set_chart_left_axis(chart, axes.axis_left, axes.axis_left_label) {
+            Ok(chart) => chart,
+            Err(err) => {
+                let err = err.to_string();
+                error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
+                return Err(Status::invalid_argument(err));
+            }
         };
 
         // Set the needed right axis.
-        chart = match axes.axis_right {
-            Some(_) => match ChartScaleKind::from_i32(v_scale.kind) {
-                Some(ChartScaleKind::Band) => chart
-                    .set_axis_right_band(get_band_v_scale(&v_scale, &sizes, &margins))
-                    .set_axis_right_label(&*axes.axis_right_label),
-                Some(ChartScaleKind::Linear) => chart
-                    .set_axis_right_linear(get_linear_v_scale(&v_scale, &sizes, &margins))
-                    .set_axis_right_label(&*axes.axis_right_label),
-                _ => {
-                    let err = RendererError::RightAxisIsSetButItsNotBandOrLinear.to_string();
-                    error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
-                    return Err(Status::invalid_argument(err));
-                }
-            },
-            _ => chart,
+        chart = match set_chart_right_axis(chart, axes.axis_right, axes.axis_right_label) {
+            Ok(chart) => chart,
+            Err(err) => {
+                let err = err.to_string();
+                error!(log, "{}", ERR_UNABLE_TO_RENDER_CHART; LOG_KEY_ERR => err.clone());
+                return Err(Status::invalid_argument(err));
+            }
         };
 
         Ok(Response::new(RenderChartReply {

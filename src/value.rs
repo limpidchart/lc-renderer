@@ -41,11 +41,11 @@ pub(crate) fn get_bars_values(view: &ChartView) -> Result<Vec<BarsValues>, Rende
     for bars_value in chart_view_bars_values.bars_datasets.iter() {
         let fill_color = match get_color(bars_value.fill_color.clone()) {
             Some(fill_color) => fill_color,
-            None => return Err(RendererError::ExpectedFillColorForBarsValues),
+            None => return Err(RendererError::FillColorForBarsValuesIsNotSpecified),
         };
         let stroke_color = match get_color(bars_value.stroke_color.clone()) {
             Some(stroke_color) => stroke_color,
-            None => return Err(RendererError::ExpectedStrokeColorForBarsValues),
+            None => return Err(RendererError::StrokeColorForBarsValuesIsNotSpecified),
         };
         res.push(
             BarsValues::new(bars_value.values.clone())
@@ -94,11 +94,11 @@ mod tests {
             x_scale: None,
             y_scale: None,
             colors: None,
-            bar_label_visible: false,
+            bar_label_visible: Some(false),
             bar_label_position: 0,
-            point_visible: false,
+            point_visible: Some(false),
             point_type: 0,
-            point_label_visible: false,
+            point_label_visible: Some(false),
             point_label_position: 0,
             values: None,
         }
