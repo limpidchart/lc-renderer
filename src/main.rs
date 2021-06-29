@@ -7,6 +7,8 @@ use crate::proto::render::chart_renderer_server::ChartRendererServer;
 use crate::renderer::RendererServer;
 use slog::{Drain, FnValue, PushFnValue, Record};
 use std::net::SocketAddr;
+use tokio::signal;
+use tokio::sync::oneshot::{self, Receiver, Sender};
 use tonic::transport::Server;
 
 mod bar;
@@ -22,6 +24,16 @@ mod value;
 mod view;
 
 const ENV_LC_RENDERER_ADDR: &str = "LC_RENDERER_ADDR";
+
+pub fn signal_channel() -> (Sender<()>, Receiver<()>) {
+    oneshot::channel()
+}
+
+pub async fn wait_for_signal(log: slog::Logger, tx: oneshot::Sender<()>) {
+    let _ = signal::ctrl_c().await;
+    info!(log, "Got signal, exiting");
+    let _ = tx.send(());
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -44,6 +56,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let drain = slog_async::Async::new(drain).build().fuse();
     let log = slog::Logger::root(drain, o!("version" => env!("CARGO_PKG_VERSION")));
 
+    // Catch signals.
+    let (signal_tx, singal_rx) = signal_channel();
+    let _ = tokio::spawn(wait_for_signal(log.clone(), signal_tx));
+
     // Configure server address from env.
     let addr = std::env::var(ENV_LC_RENDERER_ADDR).expect(&*format!(
         "unable to read {} env variable",
@@ -65,7 +81,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Server::builder()
         .add_service(health_service)
         .add_service(ChartRendererServer::new(renderer_server))
-        .serve(socket_addr)
+        .serve_with_shutdown(socket_addr, async {
+            singal_rx.await.ok();
+        })
         .await?;
 
     Ok(())
