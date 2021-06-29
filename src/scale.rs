@@ -1,5 +1,5 @@
 use crate::error::RendererError;
-use crate::proto::render::chart_scale::ChartScaleKind;
+use crate::proto::render::chart_scale::{ChartScaleKind, Domain};
 use crate::proto::render::{ChartAxes, ChartScale};
 use lc_render::{BandScale, Chart, LinearScale};
 
@@ -31,9 +31,17 @@ pub(crate) fn get_linear_h_scale(h_scale: &ChartScale) -> Result<LinearScale, Re
         Some(range_end) => range_end,
         None => return Err(RendererError::ScaleRangeEndIsNotSpecified),
     };
+    let domain = match &h_scale.domain {
+        Some(domain) => domain,
+        None => return Err(RendererError::ScaleDomainIsNotSpecified),
+    };
+    let domain_numeric = match domain {
+        Domain::DomainNumeric(domain_numeric) => domain_numeric,
+        _ => return Err(RendererError::LinearScaleNumericDomainIsNotSpecified),
+    };
     Ok(LinearScale::new(
-        h_scale.domain_num_start,
-        h_scale.domain_num_end,
+        domain_numeric.start,
+        domain_numeric.end,
         range_start,
         range_end,
     ))
@@ -49,9 +57,17 @@ pub(crate) fn get_linear_v_scale(v_scale: &ChartScale) -> Result<LinearScale, Re
         Some(range_end) => range_end,
         None => return Err(RendererError::ScaleRangeEndIsNotSpecified),
     };
+    let domain = match &v_scale.domain {
+        Some(domain) => domain,
+        None => return Err(RendererError::ScaleDomainIsNotSpecified),
+    };
+    let domain_numeric = match domain {
+        Domain::DomainNumeric(domain_numeric) => domain_numeric,
+        _ => return Err(RendererError::LinearScaleNumericDomainIsNotSpecified),
+    };
     Ok(LinearScale::new(
-        v_scale.domain_num_start,
-        v_scale.domain_num_end,
+        domain_numeric.start,
+        domain_numeric.end,
         range_start,
         range_end,
     ))
@@ -75,8 +91,16 @@ pub(crate) fn get_band_h_scale(h_scale: &ChartScale) -> Result<BandScale, Render
         Some(outer_padding) => outer_padding,
         None => return Err(RendererError::BandScaleOuterPaddingIsNotSpecified),
     };
+    let domain = match &h_scale.domain {
+        Some(domain) => domain,
+        None => return Err(RendererError::ScaleDomainIsNotSpecified),
+    };
+    let domain_categories = match domain {
+        Domain::DomainCategories(domain_categories) => domain_categories,
+        _ => return Err(RendererError::BandScaleCategoriesDomainIsNotSpecified),
+    };
     Ok(
-        BandScale::new(h_scale.domain_categories.clone(), range_start, range_end)
+        BandScale::new(domain_categories.categories.clone(), range_start, range_end)
             .set_inner_padding(inner_padding)
             .set_outer_padding(outer_padding)
             .set_no_boundaries_offset(h_scale.no_boundaries_offset),
@@ -101,8 +125,16 @@ pub(crate) fn get_band_v_scale(v_scale: &ChartScale) -> Result<BandScale, Render
         Some(outer_padding) => outer_padding,
         None => return Err(RendererError::BandScaleOuterPaddingIsNotSpecified),
     };
+    let domain = match &v_scale.domain {
+        Some(domain) => domain,
+        None => return Err(RendererError::ScaleDomainIsNotSpecified),
+    };
+    let domain_categories = match domain {
+        Domain::DomainCategories(domain_categories) => domain_categories,
+        _ => return Err(RendererError::BandScaleCategoriesDomainIsNotSpecified),
+    };
     Ok(
-        BandScale::new(v_scale.domain_categories.clone(), range_start, range_end)
+        BandScale::new(domain_categories.categories.clone(), range_start, range_end)
             .set_inner_padding(inner_padding)
             .set_outer_padding(outer_padding)
             .set_no_boundaries_offset(v_scale.no_boundaries_offset),
@@ -235,6 +267,7 @@ pub(crate) fn set_chart_right_axis(
 mod tests {
     use super::*;
     use crate::proto::render::chart_scale::ChartScaleKind;
+    use crate::proto::render::{DomainCategories, DomainNumeric};
     use lc_render::{Scale, ScaleKind};
 
     fn chart_scale_linear() -> ChartScale {
@@ -242,9 +275,10 @@ mod tests {
             kind: ChartScaleKind::Linear as i32,
             range_start: Some(10),
             range_end: Some(1000),
-            domain_num_start: 80_f32,
-            domain_num_end: 160_f32,
-            domain_categories: Vec::new(),
+            domain: Some(Domain::DomainNumeric(DomainNumeric {
+                start: 80_f32,
+                end: 160_f32,
+            })),
             no_boundaries_offset: true,
             inner_padding: Some(0_f32),
             outer_padding: Some(0_f32),
@@ -256,9 +290,9 @@ mod tests {
             kind: ChartScaleKind::Band as i32,
             range_start: Some(100),
             range_end: Some(10000),
-            domain_num_start: 120_f32,
-            domain_num_end: 300_f32,
-            domain_categories: vec!["a".to_string(), "b".to_string()],
+            domain: Some(Domain::DomainCategories(DomainCategories {
+                categories: vec!["a".to_string(), "b".to_string()],
+            })),
             no_boundaries_offset: false,
             inner_padding: Some(10_f32),
             outer_padding: Some(20_f32),

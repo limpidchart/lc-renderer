@@ -10,15 +10,6 @@ pub struct ChartScale {
     /// End of the scale range.
     #[prost(message, optional, tag = "3")]
     pub range_end: ::core::option::Option<i32>,
-    /// Start of the numeric scale domain.
-    #[prost(float, tag = "4")]
-    pub domain_num_start: f32,
-    /// End of the numeric scale domain.
-    #[prost(float, tag = "5")]
-    pub domain_num_end: f32,
-    /// Scale string categories.
-    #[prost(string, repeated, tag = "6")]
-    pub domain_categories: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     /// Does this scale needs an offset from the start and end of an axis.
     /// This is usually need for an area or line views.
     #[prost(bool, tag = "7")]
@@ -29,6 +20,9 @@ pub struct ChartScale {
     /// Outer padding for categories.
     #[prost(message, optional, tag = "9")]
     pub outer_padding: ::core::option::Option<f32>,
+    /// Scale domain with one of available kind.
+    #[prost(oneof = "chart_scale::Domain", tags = "4, 5")]
+    pub domain: ::core::option::Option<chart_scale::Domain>,
 }
 /// Nested message and enum types in `ChartScale`.
 pub mod chart_scale {
@@ -40,6 +34,32 @@ pub mod chart_scale {
         Linear = 1,
         Band = 2,
     }
+    /// Scale domain with one of available kind.
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Domain {
+        /// Numeric scale domain.
+        #[prost(message, tag = "4")]
+        DomainNumeric(super::DomainNumeric),
+        /// String scale domain categories.
+        #[prost(message, tag = "5")]
+        DomainCategories(super::DomainCategories),
+    }
+}
+/// DomainNumeric represents numeric scale domain.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DomainNumeric {
+    /// Start of the numeric scale domain.
+    #[prost(float, tag = "1")]
+    pub start: f32,
+    /// End of the numeric scale domain.
+    #[prost(float, tag = "2")]
+    pub end: f32,
+}
+/// DomainCategories represents string categorical scale domain.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DomainCategories {
+    #[prost(string, repeated, tag = "1")]
+    pub categories: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 /// ChartSizes represents options to configure chart sizes.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -176,35 +196,29 @@ pub struct ChartView {
     /// One of the available view kinds.
     #[prost(enumeration = "chart_view::ChartViewKind", tag = "1")]
     pub kind: i32,
-    /// Configured scale for horizontal axis.
-    #[prost(message, optional, tag = "2")]
-    pub x_scale: ::core::option::Option<ChartScale>,
-    /// Configured scale for vertical axis.
-    #[prost(message, optional, tag = "3")]
-    pub y_scale: ::core::option::Option<ChartScale>,
     /// Configured colors for view.
-    #[prost(message, optional, tag = "7")]
+    #[prost(message, optional, tag = "5")]
     pub colors: ::core::option::Option<ChartViewColors>,
     /// Set bar visibility for bar view.
-    #[prost(message, optional, tag = "8")]
+    #[prost(message, optional, tag = "6")]
     pub bar_label_visible: ::core::option::Option<bool>,
     /// One of the available bar label positions for bar view.
-    #[prost(enumeration = "chart_view::ChartViewBarLabelPosition", tag = "9")]
+    #[prost(enumeration = "chart_view::ChartViewBarLabelPosition", tag = "7")]
     pub bar_label_position: i32,
     /// Set bar visibility for view with points.
-    #[prost(message, optional, tag = "10")]
+    #[prost(message, optional, tag = "8")]
     pub point_visible: ::core::option::Option<bool>,
     /// One of the available point types for view with points.
-    #[prost(enumeration = "chart_view::ChartViewPointType", tag = "11")]
+    #[prost(enumeration = "chart_view::ChartViewPointType", tag = "9")]
     pub point_type: i32,
     /// Set point visibility for view with points.
-    #[prost(message, optional, tag = "12")]
+    #[prost(message, optional, tag = "10")]
     pub point_label_visible: ::core::option::Option<bool>,
     /// One of the available point label positions for view with points.
-    #[prost(enumeration = "chart_view::ChartViewPointLabelPosition", tag = "13")]
+    #[prost(enumeration = "chart_view::ChartViewPointLabelPosition", tag = "11")]
     pub point_label_position: i32,
     /// View values with one of available kind of values.
-    #[prost(oneof = "chart_view::Values", tags = "4, 5, 6")]
+    #[prost(oneof = "chart_view::Values", tags = "2, 3, 4")]
     pub values: ::core::option::Option<chart_view::Values>,
 }
 /// Nested message and enum types in `ChartView`.
@@ -257,11 +271,11 @@ pub mod chart_view {
     /// View values with one of available kind of values.
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Values {
-        #[prost(message, tag = "4")]
+        #[prost(message, tag = "2")]
         ScalarValues(super::ChartViewScalarValues),
-        #[prost(message, tag = "5")]
+        #[prost(message, tag = "3")]
         PointsValues(super::ChartViewPointsValues),
-        #[prost(message, tag = "6")]
+        #[prost(message, tag = "4")]
         BarsValues(super::ChartViewBarsValues),
     }
 }

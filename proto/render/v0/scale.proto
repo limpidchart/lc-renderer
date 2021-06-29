@@ -24,14 +24,14 @@ message ChartScale {
   // End of the scale range.
   google.protobuf.Int32Value range_end = 3;
 
-  // Start of the numeric scale domain.
-  float domain_num_start = 4;
+  // Scale domain with one of available kind.
+  oneof domain {
+    // Numeric scale domain.
+    DomainNumeric domain_numeric = 4;
 
-  // End of the numeric scale domain.
-  float domain_num_end = 5;
-
-  // Scale string categories.
-  repeated string domain_categories = 6;
+    // String scale domain categories.
+    DomainCategories domain_categories = 5;
+  }
 
   // Does this scale needs an offset from the start and end of an axis.
   // This is usually need for an area or line views.
@@ -42,4 +42,18 @@ message ChartScale {
 
   // Outer padding for categories.
   google.protobuf.FloatValue outer_padding = 9;
+}
+
+// DomainNumeric represents numeric scale domain.
+message DomainNumeric {
+  // Start of the numeric scale domain.
+  float start = 1;
+
+  // End of the numeric scale domain.
+  float end = 2;
+}
+
+// DomainCategories represents string categorical scale domain.
+message DomainCategories {
+  repeated string categories = 1;
 }

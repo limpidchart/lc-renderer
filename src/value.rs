@@ -91,8 +91,6 @@ mod tests {
     fn chart_view_empty() -> ChartView {
         ChartView {
             kind: 0,
-            x_scale: None,
-            y_scale: None,
             colors: None,
             bar_label_visible: Some(false),
             bar_label_position: 0,

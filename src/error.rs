@@ -139,6 +139,15 @@ pub enum RendererError {
     /// Range end for scale is not specified.
     ScaleRangeEndIsNotSpecified,
 
+    /// Domain for scale is not specified.
+    ScaleDomainIsNotSpecified,
+
+    /// Linear scale numeric domain is not specified.
+    LinearScaleNumericDomainIsNotSpecified,
+
+    /// Band scale categories domain is not specified.
+    BandScaleCategoriesDomainIsNotSpecified,
+
     /// Band scale inner padding is not specified.
     BandScaleInnerPaddingIsNotSpecified,
 
@@ -324,6 +333,19 @@ impl std::fmt::Display for RendererError {
             }
             RendererError::ScaleRangeEndIsNotSpecified => {
                 "range end for scale is not specified".to_string().fmt(f)
+            }
+            RendererError::ScaleDomainIsNotSpecified => {
+                "domain for scale is not specified".to_string().fmt(f)
+            }
+            RendererError::LinearScaleNumericDomainIsNotSpecified => {
+                "numeric domain for linear scale is not specified"
+                    .to_string()
+                    .fmt(f)
+            }
+            RendererError::BandScaleCategoriesDomainIsNotSpecified => {
+                "categories domain for band scale is not specified"
+                    .to_string()
+                    .fmt(f)
             }
             RendererError::BandScaleInnerPaddingIsNotSpecified => {
                 "inner padding for band scale is not specified"
