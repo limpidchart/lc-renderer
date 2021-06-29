@@ -50,11 +50,11 @@ fn get_area_view(
     v_scale: &ChartScale,
 ) -> Result<AreaView, RendererError> {
     let values = get_scalar_values(view)?;
-    let x_scale = match get_band_h_scale(&h_scale) {
+    let x_scale = match get_band_h_scale(h_scale) {
         Ok(x_scale) => x_scale,
         Err(err) => return Err(err),
     };
-    let y_scale = match get_linear_v_scale(&v_scale) {
+    let y_scale = match get_linear_v_scale(v_scale) {
         Ok(y_scale) => y_scale,
         Err(err) => return Err(err),
     };
@@ -94,7 +94,7 @@ fn get_area_view(
         .set_point_visible(point_visible)
         .set_point_label_visible(point_label_visible)
         .set_point_label_position(point_label_position)
-        .set_data(&values)
+        .set_data(values)
     {
         Ok(area_view) => area_view,
         Err(err) => return Err(RendererError::RenderError(err)),
@@ -109,11 +109,11 @@ fn get_horizontal_bar_view(
     v_scale: &ChartScale,
 ) -> Result<HorizontalBarView, RendererError> {
     let values = get_bars_values(view)?;
-    let x_scale = match get_linear_h_scale(&h_scale) {
+    let x_scale = match get_linear_h_scale(h_scale) {
         Ok(x_scale) => x_scale,
         Err(err) => return Err(err),
     };
-    let y_scale = match get_band_v_scale(&v_scale) {
+    let y_scale = match get_band_v_scale(v_scale) {
         Ok(y_scale) => y_scale,
         Err(err) => return Err(err),
     };
@@ -140,11 +140,11 @@ fn get_line_view(
     v_scale: &ChartScale,
 ) -> Result<LineView, RendererError> {
     let values = get_scalar_values(view)?;
-    let x_scale = match get_band_h_scale(&h_scale) {
+    let x_scale = match get_band_h_scale(h_scale) {
         Ok(x_scale) => x_scale,
         Err(err) => return Err(err),
     };
-    let y_scale = match get_linear_v_scale(&v_scale) {
+    let y_scale = match get_linear_v_scale(v_scale) {
         Ok(y_scale) => y_scale,
         Err(err) => return Err(err),
     };
@@ -179,7 +179,7 @@ fn get_line_view(
         .set_point_visible(point_visible)
         .set_point_label_visible(point_label_visible)
         .set_point_label_position(point_label_position)
-        .set_data(&values)
+        .set_data(values)
     {
         Ok(line_view) => line_view,
         Err(err) => return Err(RendererError::RenderError(err)),
@@ -194,11 +194,11 @@ fn get_scatter_view(
     v_scale: &ChartScale,
 ) -> Result<ScatterView, RendererError> {
     let values = get_points_values(view)?;
-    let x_scale = match get_linear_h_scale(&h_scale) {
+    let x_scale = match get_linear_h_scale(h_scale) {
         Ok(x_scale) => x_scale,
         Err(err) => return Err(err),
     };
-    let y_scale = match get_linear_v_scale(&v_scale) {
+    let y_scale = match get_linear_v_scale(v_scale) {
         Ok(y_scale) => y_scale,
         Err(err) => return Err(err),
     };
@@ -243,11 +243,11 @@ fn get_vertical_bar_view(
     v_scale: &ChartScale,
 ) -> Result<VerticalBarView, RendererError> {
     let values = get_bars_values(view)?;
-    let x_scale = match get_band_h_scale(&h_scale) {
+    let x_scale = match get_band_h_scale(h_scale) {
         Ok(x_scale) => x_scale,
         Err(err) => return Err(err),
     };
-    let y_scale = match get_linear_v_scale(&v_scale) {
+    let y_scale = match get_linear_v_scale(v_scale) {
         Ok(y_scale) => y_scale,
         Err(err) => return Err(err),
     };
