@@ -5,7 +5,6 @@ package render;
 option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
 
 import "color.proto";
-import "scale.proto";
 import "view_values.proto";
 
 import "google/protobuf/wrappers.proto";
@@ -56,39 +55,33 @@ message ChartView {
   // One of the available view kinds.
   ChartViewKind kind = 1;
 
-  // Configured scale for horizontal axis.
-  ChartScale x_scale = 2;
-
-  // Configured scale for vertical axis.
-  ChartScale y_scale = 3;
-
   // View values with one of available kind of values.
   oneof values {
-    ChartViewScalarValues scalar_values = 4;
-    ChartViewPointsValues points_values = 5;
-    ChartViewBarsValues bars_values = 6;
+    ChartViewScalarValues scalar_values = 2;
+    ChartViewPointsValues points_values = 3;
+    ChartViewBarsValues bars_values = 4;
   }
 
   // Configured colors for view.
-  ChartViewColors colors = 7;
+  ChartViewColors colors = 5;
 
   // Set bar visibility for bar view.
-  google.protobuf.BoolValue bar_label_visible = 8;
+  google.protobuf.BoolValue bar_label_visible = 6;
 
   // One of the available bar label positions for bar view.
-  ChartViewBarLabelPosition bar_label_position = 9;
+  ChartViewBarLabelPosition bar_label_position = 7;
 
   // Set bar visibility for view with points.
-  google.protobuf.BoolValue point_visible = 10;
+  google.protobuf.BoolValue point_visible = 8;
 
   // One of the available point types for view with points.
-  ChartViewPointType point_type = 11;
+  ChartViewPointType point_type = 9;
 
   // Set point visibility for view with points.
-  google.protobuf.BoolValue point_label_visible = 12;
+  google.protobuf.BoolValue point_label_visible = 10;
 
   // One of the available point label positions for view with points.
-  ChartViewPointLabelPosition point_label_position = 13;
+  ChartViewPointLabelPosition point_label_position = 11;
 }
 
 // ChartViewColors represents options to configure view colors.

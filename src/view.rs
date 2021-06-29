@@ -272,7 +272,7 @@ fn get_vertical_bar_view(
 mod tests {
     use super::*;
     use crate::proto::render::chart_element_color::ColorValue;
-    use crate::proto::render::chart_scale::ChartScaleKind;
+    use crate::proto::render::chart_scale::{ChartScaleKind, Domain};
     use crate::proto::render::chart_view::{
         ChartViewBarLabelPosition, ChartViewPointLabelPosition, ChartViewPointType, Values,
     };
@@ -280,7 +280,7 @@ mod tests {
     use crate::proto::render::chart_view_points_values::Point;
     use crate::proto::render::{
         ChartElementColor, ChartViewBarsValues, ChartViewColors, ChartViewPointsValues,
-        ChartViewScalarValues,
+        ChartViewScalarValues, DomainCategories, DomainNumeric,
     };
 
     fn chart_view_colors() -> ChartViewColors {
@@ -305,9 +305,10 @@ mod tests {
             kind: ChartScaleKind::Linear as i32,
             range_start: Some(0),
             range_end: Some(100),
-            domain_num_start: 200_f32,
-            domain_num_end: 800_f32,
-            domain_categories: Vec::new(),
+            domain: Some(Domain::DomainNumeric(DomainNumeric {
+                start: 200_f32,
+                end: 800_f32,
+            })),
             no_boundaries_offset: false,
             inner_padding: Some(0.1_f32),
             outer_padding: Some(0.1_f32),
@@ -319,9 +320,9 @@ mod tests {
             kind: ChartScaleKind::Band as i32,
             range_start: Some(0),
             range_end: Some(100),
-            domain_num_start: 0_f32,
-            domain_num_end: 0_f32,
-            domain_categories: vec!["a".to_string(), "b".to_string()],
+            domain: Some(Domain::DomainCategories(DomainCategories {
+                categories: vec!["a".to_string(), "b".to_string()],
+            })),
             no_boundaries_offset: false,
             inner_padding: Some(0.1_f32),
             outer_padding: Some(0.1_f32),
@@ -331,8 +332,6 @@ mod tests {
     fn chart_view_empty() -> ChartView {
         ChartView {
             kind: 0,
-            x_scale: None,
-            y_scale: None,
             colors: Some(chart_view_colors()),
             bar_label_visible: Some(false),
             bar_label_position: 0,
@@ -409,7 +408,7 @@ mod tests {
         view.point_visible = Some(true);
         view.point_label_visible = Some(true);
 
-        get_scatter_view(&view, &chart_scale_band(), &chart_scale_linear()).unwrap();
+        get_scatter_view(&view, &chart_scale_linear(), &chart_scale_linear()).unwrap();
     }
 
     #[test]
