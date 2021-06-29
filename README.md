@@ -2,7 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/lc-renderer.svg)](https://crates.io/crates/lc-renderer)
 [![docs](https://docs.rs/lc-renderer/badge.svg)](https://docs.rs/lc-renderer)
-[![inspection](https://github.com/limpidchart/lc-renderer/actions/workflows/inspection.yml/badge.svg?branch=main)](https://github.com/limpidchart/lc-renderer/actions/workflows/inspection.yml)
+[![inspection-stable](https://github.com/limpidchart/lc-renderer/actions/workflows/inspection-stable.yml/badge.svg?branch=main)](https://github.com/limpidchart/lc-renderer/actions/workflows/inspection-stable.yml)
 
 Server to render chart images
 
