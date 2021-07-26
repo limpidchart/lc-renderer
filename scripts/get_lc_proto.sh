@@ -6,7 +6,7 @@
 set -eu
 set -o pipefail
 
-LC_PROTO_VESION="v0.3.0"
+LC_PROTO_VESION="v0.3.1"
 
 LC_PROTO_URL="https://github.com/limpidchart/lc-proto.git"
 PROTOS_SRC_DIR="render"
