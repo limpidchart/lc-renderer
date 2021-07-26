@@ -65,19 +65,19 @@ message ChartView {
   // Configured colors for view.
   ChartViewColors colors = 5;
 
-  // Set bar visibility for bar view.
+  // Set bar label visibility for view with bars.
   google.protobuf.BoolValue bar_label_visible = 6;
 
-  // One of the available bar label positions for bar view.
+  // One of the available bar label positions for view with bars.
   ChartViewBarLabelPosition bar_label_position = 7;
 
-  // Set bar visibility for view with points.
+  // Set point visibility for view with points.
   google.protobuf.BoolValue point_visible = 8;
 
   // One of the available point types for view with points.
   ChartViewPointType point_type = 9;
 
-  // Set point visibility for view with points.
+  // Set point label visibility for view with points.
   google.protobuf.BoolValue point_label_visible = 10;
 
   // One of the available point label positions for view with points.

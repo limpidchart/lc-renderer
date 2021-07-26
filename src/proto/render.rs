@@ -199,19 +199,19 @@ pub struct ChartView {
     /// Configured colors for view.
     #[prost(message, optional, tag = "5")]
     pub colors: ::core::option::Option<ChartViewColors>,
-    /// Set bar visibility for bar view.
+    /// Set bar label visibility for view with bars.
     #[prost(message, optional, tag = "6")]
     pub bar_label_visible: ::core::option::Option<bool>,
-    /// One of the available bar label positions for bar view.
+    /// One of the available bar label positions for view with bars.
     #[prost(enumeration = "chart_view::ChartViewBarLabelPosition", tag = "7")]
     pub bar_label_position: i32,
-    /// Set bar visibility for view with points.
+    /// Set point visibility for view with points.
     #[prost(message, optional, tag = "8")]
     pub point_visible: ::core::option::Option<bool>,
     /// One of the available point types for view with points.
     #[prost(enumeration = "chart_view::ChartViewPointType", tag = "9")]
     pub point_type: i32,
-    /// Set point visibility for view with points.
+    /// Set point label visibility for view with points.
     #[prost(message, optional, tag = "10")]
     pub point_label_visible: ::core::option::Option<bool>,
     /// One of the available point label positions for view with points.
