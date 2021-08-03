@@ -276,7 +276,7 @@ mod tests {
     use crate::proto::render::chart_view::{
         ChartViewBarLabelPosition, ChartViewPointLabelPosition, ChartViewPointType, Values,
     };
-    use crate::proto::render::chart_view_bars_values::BarsDataset;
+    use crate::proto::render::chart_view_bars_values::{BarsDataset, ChartViewBarsColors};
     use crate::proto::render::chart_view_points_values::Point;
     use crate::proto::render::{
         ChartElementColor, ChartViewBarsValues, ChartViewColors, ChartViewPointsValues,
@@ -285,16 +285,16 @@ mod tests {
 
     fn chart_view_colors() -> ChartViewColors {
         ChartViewColors {
-            fill_color: Some(ChartElementColor {
+            fill: Some(ChartElementColor {
                 color_value: Some(ColorValue::ColorHex("#2b4b49".to_string())),
             }),
-            stroke_color: Some(ChartElementColor {
+            stroke: Some(ChartElementColor {
                 color_value: Some(ColorValue::ColorHex("#226974".to_string())),
             }),
-            point_fill_color: Some(ChartElementColor {
+            point_fill: Some(ChartElementColor {
                 color_value: Some(ColorValue::ColorHex("#1a888b".to_string())),
             }),
-            point_stroke_color: Some(ChartElementColor {
+            point_stroke: Some(ChartElementColor {
                 color_value: Some(ColorValue::ColorHex("#50c5b6".to_string())),
             }),
         }
@@ -363,11 +363,13 @@ mod tests {
         view.values = Some(Values::BarsValues(ChartViewBarsValues {
             bars_datasets: vec![BarsDataset {
                 values: vec![16_f32, 32_f32],
-                fill_color: Some(ChartElementColor {
-                    color_value: Some(ColorValue::ColorHex("#a496c4".to_string())),
-                }),
-                stroke_color: Some(ChartElementColor {
-                    color_value: Some(ColorValue::ColorHex("#7d69ac".to_string())),
+                colors: Some(ChartViewBarsColors {
+                    fill: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#a496c4".to_string())),
+                    }),
+                    stroke: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#7d69ac".to_string())),
+                    }),
                 }),
             }],
         }));
@@ -417,11 +419,13 @@ mod tests {
         view.values = Some(Values::BarsValues(ChartViewBarsValues {
             bars_datasets: vec![BarsDataset {
                 values: vec![64_f32, 32_f32],
-                fill_color: Some(ChartElementColor {
-                    color_value: Some(ColorValue::ColorHex("#028c02".to_string())),
-                }),
-                stroke_color: Some(ChartElementColor {
-                    color_value: Some(ColorValue::ColorHex("#02b502".to_string())),
+                colors: Some(ChartViewBarsColors {
+                    fill: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#028c02".to_string())),
+                    }),
+                    stroke: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#02b502".to_string())),
+                    }),
                 }),
             }],
         }));
@@ -447,11 +451,13 @@ mod tests {
         vertical_bar_view.values = Some(Values::BarsValues(ChartViewBarsValues {
             bars_datasets: vec![BarsDataset {
                 values: vec![20_f32, 200_f32],
-                fill_color: Some(ChartElementColor {
-                    color_value: Some(ColorValue::ColorHex("#cc6633".to_string())),
-                }),
-                stroke_color: Some(ChartElementColor {
-                    color_value: Some(ColorValue::ColorHex("#ff9933".to_string())),
+                colors: Some(ChartViewBarsColors {
+                    fill: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#cc6633".to_string())),
+                    }),
+                    stroke: Some(ChartElementColor {
+                        color_value: Some(ColorValue::ColorHex("#ff9933".to_string())),
+                    }),
                 }),
             }],
         }));

@@ -87,14 +87,14 @@ message ChartView {
 // ChartViewColors represents options to configure view colors.
 message ChartViewColors {
   // View fill color.
-  ChartElementColor fill_color = 1;
+  ChartElementColor fill = 1;
 
   // View stroke color.
-  ChartElementColor stroke_color = 2;
+  ChartElementColor stroke = 2;
 
   // View point fill color.
-  ChartElementColor point_fill_color = 3;
+  ChartElementColor point_fill = 3;
 
   // View point stroke color.
-  ChartElementColor point_stroke_color = 4;
+  ChartElementColor point_stroke = 4;
 }

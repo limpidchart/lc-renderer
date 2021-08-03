@@ -19,6 +19,9 @@ pub enum RendererError {
     /// Expected points values but got other kind.
     ExpectedPointsValues,
 
+    /// Bars values are not specified.
+    ColorsForBarsValuesAreNotSpecified,
+
     /// Bars values fill color is not specified.
     FillColorForBarsValuesIsNotSpecified,
 
@@ -171,6 +174,11 @@ impl std::fmt::Display for RendererError {
             RendererError::ExpectedBarsValues => "expected bars values for view".to_string().fmt(f),
             RendererError::ExpectedPointsValues => {
                 "expected points values for view".to_string().fmt(f)
+            }
+            RendererError::ColorsForBarsValuesAreNotSpecified => {
+                "colors for bars values are not specified"
+                    .to_string()
+                    .fmt(f)
             }
             RendererError::FillColorForBarsValuesIsNotSpecified => {
                 "fill color for bars values is not specified"

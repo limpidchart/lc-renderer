@@ -6,13 +6,18 @@ option go_package = "github.com/limpidchart/lc-proto/render/v0;render";
 
 import "color.proto";
 
-// ChartViewBarsValues represents options for bar values.
+// ChartViewBarsValues represents options for bars values.
 message ChartViewBarsValues {
+  // ChartViewBarsColors represents options to configure bars values colors.
+  message ChartViewBarsColors {
+    ChartElementColor fill = 1;
+    ChartElementColor stroke = 2;
+  }
+
   // BarsDataset represents a single dataset with several bars.
   message BarsDataset {
     repeated float values = 1;
-    ChartElementColor fill_color = 2;
-    ChartElementColor stroke_color = 3;
+    ChartViewBarsColors colors = 2;
   }
 
   // Array of configured bars datasets.
