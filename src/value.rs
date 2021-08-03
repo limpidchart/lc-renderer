@@ -39,11 +39,15 @@ pub(crate) fn get_bars_values(view: &ChartView) -> Result<Vec<BarsValues>, Rende
 
     let mut res = Vec::with_capacity(chart_view_bars_values.bars_datasets.len());
     for bars_value in chart_view_bars_values.bars_datasets.iter() {
-        let fill_color = match get_color(bars_value.fill_color.clone()) {
+        let colors = match bars_value.colors.clone() {
+            Some(colors) => colors,
+            None => return Err(RendererError::ColorsForBarsValuesAreNotSpecified),
+        };
+        let fill_color = match get_color(colors.fill.clone()) {
             Some(fill_color) => fill_color,
             None => return Err(RendererError::FillColorForBarsValuesIsNotSpecified),
         };
-        let stroke_color = match get_color(bars_value.stroke_color.clone()) {
+        let stroke_color = match get_color(colors.stroke.clone()) {
             Some(stroke_color) => stroke_color,
             None => return Err(RendererError::StrokeColorForBarsValuesIsNotSpecified),
         };
@@ -83,7 +87,7 @@ pub(crate) fn get_points_values(view: &ChartView) -> Result<Vec<(f32, f32)>, Ren
 mod tests {
     use super::*;
     use crate::proto::render::chart_element_color::ColorValue;
-    use crate::proto::render::chart_view_bars_values::BarsDataset;
+    use crate::proto::render::chart_view_bars_values::{BarsDataset, ChartViewBarsColors};
     use crate::proto::render::chart_view_points_values::Point;
     use crate::proto::render::ChartElementColor;
     use lc_render::Color;
@@ -130,20 +134,24 @@ mod tests {
             bars_datasets: vec![
                 BarsDataset {
                     values: vec![1_f32, 2_f32],
-                    fill_color: Some(ChartElementColor {
-                        color_value: Some(ColorValue::ColorHex("#FA4988".to_string())),
-                    }),
-                    stroke_color: Some(ChartElementColor {
-                        color_value: Some(ColorValue::ColorHex("#9C0412".to_string())),
+                    colors: Some(ChartViewBarsColors {
+                        fill: Some(ChartElementColor {
+                            color_value: Some(ColorValue::ColorHex("#FA4988".to_string())),
+                        }),
+                        stroke: Some(ChartElementColor {
+                            color_value: Some(ColorValue::ColorHex("#9C0412".to_string())),
+                        }),
                     }),
                 },
                 BarsDataset {
                     values: vec![3_f32, 4_f32],
-                    fill_color: Some(ChartElementColor {
-                        color_value: Some(ColorValue::ColorHex("#A9DEF2".to_string())),
-                    }),
-                    stroke_color: Some(ChartElementColor {
-                        color_value: Some(ColorValue::ColorHex("#004F84".to_string())),
+                    colors: Some(ChartViewBarsColors {
+                        fill: Some(ChartElementColor {
+                            color_value: Some(ColorValue::ColorHex("#A9DEF2".to_string())),
+                        }),
+                        stroke: Some(ChartElementColor {
+                            color_value: Some(ColorValue::ColorHex("#004F84".to_string())),
+                        }),
                     }),
                 },
             ],

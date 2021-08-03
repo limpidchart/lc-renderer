@@ -36,10 +36,10 @@ pub(crate) fn get_view_colors(
 
     match chart_view_colors {
         Some(chart_view_colors) => {
-            fill_color = get_color(chart_view_colors.fill_color);
-            stroke_color = get_color(chart_view_colors.stroke_color);
-            point_fill_color = get_color(chart_view_colors.point_fill_color);
-            point_stroke_color = get_color(chart_view_colors.point_stroke_color);
+            fill_color = get_color(chart_view_colors.fill);
+            stroke_color = get_color(chart_view_colors.stroke);
+            point_fill_color = get_color(chart_view_colors.point_fill);
+            point_stroke_color = get_color(chart_view_colors.point_stroke);
         }
         None => return Err(RendererError::ViewColorsAreNotSpecified),
     }
@@ -94,10 +94,10 @@ mod tests {
     #[test]
     fn get_colors_basic() {
         let chart_view_colors = ChartViewColors {
-            fill_color: color_hex(),
-            stroke_color: color_rgb(),
-            point_fill_color: color_hex(),
-            point_stroke_color: color_rgb(),
+            fill: color_hex(),
+            stroke: color_rgb(),
+            point_fill: color_hex(),
+            point_stroke: color_rgb(),
         };
 
         let view_colors = get_view_colors(Some(chart_view_colors)).unwrap();

@@ -145,7 +145,7 @@ pub mod chart_element_color {
         ColorRgb(Rgb),
     }
 }
-/// ChartViewBarsValues represents options for bar values.
+/// ChartViewBarsValues represents options for bars values.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChartViewBarsValues {
     /// Array of configured bars datasets.
@@ -154,15 +154,21 @@ pub struct ChartViewBarsValues {
 }
 /// Nested message and enum types in `ChartViewBarsValues`.
 pub mod chart_view_bars_values {
+    /// ChartViewBarsColors represents options to configure bars values colors.
+    #[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct ChartViewBarsColors {
+        #[prost(message, optional, tag = "1")]
+        pub fill: ::core::option::Option<super::ChartElementColor>,
+        #[prost(message, optional, tag = "2")]
+        pub stroke: ::core::option::Option<super::ChartElementColor>,
+    }
     /// BarsDataset represents a single dataset with several bars.
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct BarsDataset {
         #[prost(float, repeated, tag = "1")]
         pub values: ::prost::alloc::vec::Vec<f32>,
         #[prost(message, optional, tag = "2")]
-        pub fill_color: ::core::option::Option<super::ChartElementColor>,
-        #[prost(message, optional, tag = "3")]
-        pub stroke_color: ::core::option::Option<super::ChartElementColor>,
+        pub colors: ::core::option::Option<ChartViewBarsColors>,
     }
 }
 /// ChartViewPointsValues represents options for point values.
@@ -284,16 +290,16 @@ pub mod chart_view {
 pub struct ChartViewColors {
     /// View fill color.
     #[prost(message, optional, tag = "1")]
-    pub fill_color: ::core::option::Option<ChartElementColor>,
+    pub fill: ::core::option::Option<ChartElementColor>,
     /// View stroke color.
     #[prost(message, optional, tag = "2")]
-    pub stroke_color: ::core::option::Option<ChartElementColor>,
+    pub stroke: ::core::option::Option<ChartElementColor>,
     /// View point fill color.
     #[prost(message, optional, tag = "3")]
-    pub point_fill_color: ::core::option::Option<ChartElementColor>,
+    pub point_fill: ::core::option::Option<ChartElementColor>,
     /// View point stroke color.
     #[prost(message, optional, tag = "4")]
-    pub point_stroke_color: ::core::option::Option<ChartElementColor>,
+    pub point_stroke: ::core::option::Option<ChartElementColor>,
 }
 /// RenderChartRequest represents chart rendering request.
 #[derive(Clone, PartialEq, ::prost::Message)]
