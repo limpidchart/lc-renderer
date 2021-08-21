@@ -8,6 +8,6 @@ Server to render chart images
 
 ## API
 
-The server implements [GRPC](https://www.grpc.io) API of [lc-proto](https://github.com/limpidchart/lc-proto) `ChartRenderer` service.  
+The server implements [gRPC](https://www.grpc.io) API of [lc-proto](https://github.com/limpidchart/lc-proto) `ChartRenderer` service.  
 It performs only a very basic validation of input parameters.  
 Please use lc-api for complex validation and REST API.
